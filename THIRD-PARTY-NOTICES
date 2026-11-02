@@ -1,0 +1,12 @@
+Third-party notices for dsh-progress-payment
+
+Runtime:
+- None. The plugin uses only the Node.js standard library and the host
+  @deepseek-ai/cordis / @deepseek-ai/dsh-tools contracts.
+
+Development only (not shipped in lib/):
+- typescript 7.0.2 (Apache-2.0) — build tool.
+- @types/node (MIT) — type declarations.
+- @deepseek-ai/cordis and @deepseek-ai/dsh-tools (MIT) — host plugin/tool contracts.
+
+No customer data is included. All samples and fixtures are synthetic.

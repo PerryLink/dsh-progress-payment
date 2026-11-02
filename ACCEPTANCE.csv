@@ -1,0 +1,16 @@
+req_id,metric,threshold,actual,script,evidence_sha256,pass,source,counted
+PG-A01,ingest rows/items,7 rows 6 items 6 contract,7 rows 6 items 6 contract,scripts/acceptance.mjs,784f64323b550199c1168abfa79ed1f48ba47dd2fbe6a676eef35e8a28d3c4c2,true,public/synthetic,false
+PG-A02,period amount cents,5076360,5076360,scripts/acceptance.mjs,784f64323b550199c1168abfa79ed1f48ba47dd2fbe6a676eef35e8a28d3c4c2,true,public/synthetic,false
+PG-A03,cumulative ratio,84.62,84.62,scripts/acceptance.mjs,784f64323b550199c1168abfa79ed1f48ba47dd2fbe6a676eef35e8a28d3c4c2,true,public/synthetic,false
+PG-A04,cumulative amount cents,61414500,61414500,scripts/acceptance.mjs,784f64323b550199c1168abfa79ed1f48ba47dd2fbe6a676eef35e8a28d3c4c2,true,public/synthetic,false
+PG-A05,over quantity issue,E_PROGRESS_OVER_QTY x1,over_qty=1,scripts/acceptance.mjs,784f64323b550199c1168abfa79ed1f48ba47dd2fbe6a676eef35e8a28d3c4c2,true,public/synthetic,false
+PG-A06,price mismatch issue,E_PROGRESS_PRICE_MISMATCH x1,price_mismatch=1,scripts/acceptance.mjs,784f64323b550199c1168abfa79ed1f48ba47dd2fbe6a676eef35e8a28d3c4c2,true,public/synthetic,false
+PG-A07,duplicate item issue,E_PROGRESS_DUP_ITEM x1,duplicate_items=1,scripts/acceptance.mjs,784f64323b550199c1168abfa79ed1f48ba47dd2fbe6a676eef35e8a28d3c4c2,true,public/synthetic,false
+PG-A08,export sha256/rows,sha equals file rows=8,8 rows 1291 bytes,scripts/acceptance.mjs,784f64323b550199c1168abfa79ed1f48ba47dd2fbe6a676eef35e8a28d3c4c2,true,public/synthetic,false
+PG-A09,export path safety,traversal rejected,E_PROGRESS_PATH_INVALID,scripts/acceptance.mjs,784f64323b550199c1168abfa79ed1f48ba47dd2fbe6a676eef35e8a28d3c4c2,true,public/synthetic,false
+PG-A10,missing column error,E_PROGRESS_CSV_ROW,E_PROGRESS_CSV_ROW,scripts/acceptance.mjs,784f64323b550199c1168abfa79ed1f48ba47dd2fbe6a676eef35e8a28d3c4c2,true,public/synthetic,false
+PG-A11,unknown batch error,E_PROGRESS_BATCH_NOT_FOUND,E_PROGRESS_BATCH_NOT_FOUND,scripts/acceptance.mjs,784f64323b550199c1168abfa79ed1f48ba47dd2fbe6a676eef35e8a28d3c4c2,true,public/synthetic,false
+PG-A12,BOM + duplicate row,BOM yes counted=no,bom=yes counted_no=yes,scripts/acceptance.mjs,784f64323b550199c1168abfa79ed1f48ba47dd2fbe6a676eef35e8a28d3c4c2,true,public/synthetic,false
+PG-A13,English/reordered headers,1 row,1 row 20000 milli,scripts/acceptance.mjs,784f64323b550199c1168abfa79ed1f48ba47dd2fbe6a676eef35e8a28d3c4c2,true,public/synthetic,false
+PG-A14,invalid tolerance error,E_PROGRESS_OPTION_INVALID,E_PROGRESS_OPTION_INVALID,scripts/acceptance.mjs,784f64323b550199c1168abfa79ed1f48ba47dd2fbe6a676eef35e8a28d3c4c2,true,public/synthetic,false
+PS1-QS01,quickstart golden,1/1,1,samples/quickstart/run.mjs,bdaa9e845c43bab3e29b0e48dddfb801af505e6e552ffc3b12351f59c12feff5,true,synthetic/quickstart,true

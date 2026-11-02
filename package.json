@@ -1,0 +1,99 @@
+{
+  "name": "dsh-progress-payment",
+  "version": "0.1.0-alpha.1",
+  "description": "Audit construction progress-payment declarations against the contract baseline and export a review worksheet; amounts in integer cents.",
+  "type": "module",
+  "main": "./lib/plugin/index.js",
+  "types": "./lib/plugin/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./lib/plugin/index.d.ts",
+      "default": "./lib/plugin/index.js"
+    }
+  },
+  "files": [
+    "lib",
+    "cordis.patch.yml",
+    "README.md",
+    "README-zh.md",
+    "README-es.md",
+    "README-pt.md",
+    "README-hi.md",
+    "TROUBLESHOOTING.md",
+    "screenshots.json",
+    "samples",
+    "docs/assets",
+    "icon.svg"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "demo": {
+      "sample": "samples/quickstart/input/declaration-2026-10.csv",
+      "prompt": "帮我审一下这期进度款申报，按合同基准核对超量和单价，把问题清单导成底稿。",
+      "expect": "samples/quickstart/expected/result.json",
+      "screenshot": "docs/assets/quickstart.png",
+      "reads": [
+        "用户指定的进度款申报 CSV 与合同基准 CSV（样例：samples/quickstart/input/）"
+      ],
+      "writes": [
+        "$DSH_HOME/dsh-progress-payment/exports/"
+      ],
+      "network": false,
+      "external": []
+    }
+  },
+  "engines": {
+    "dsh": ">=0.2.1-rc.3 <0.4.0",
+    "node": ">=24.9.0 <25"
+  },
+  "packageManager": "pnpm@11.28.5",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "lint": "node scripts/lint.mjs",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "pnpm build && node --test test/*.test.mjs",
+    "gate": "node scripts/gate.mjs",
+    "acceptance": "node scripts/acceptance.mjs",
+    "quickstart": "node samples/quickstart/run.mjs --check",
+    "prepublishOnly": "npm run build && node scripts/lint.mjs && node scripts/gate.mjs"
+  },
+  "keywords": [
+    "deepseek-harness",
+    "dsh",
+    "dsh-plugin",
+    "progress-payment",
+    "construction",
+    "quantity-surveying",
+    "csv",
+    "perrylink"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PerryLink/dsh-progress-payment.git"
+  },
+  "homepage": "https://perrylink.github.io/dsh-plugins/packages/dsh-progress-payment.html",
+  "bugs": {
+    "url": "https://github.com/PerryLink/dsh-progress-payment/issues"
+  },
+  "license": "Apache-2.0",
+  "publishConfig": {
+    "access": "public"
+  },
+  "peerDependencies": {
+    "@deepseek-ai/cordis": ">=4.0.5 <5.0.0",
+    "@deepseek-ai/dsh-tools": ">=0.2.1-rc.3 <0.4.0"
+  },
+  "devDependencies": {
+    "@deepseek-ai/cordis": "4.0.5",
+    "@deepseek-ai/dsh-tools": "0.2.1-rc.3",
+    "@types/node": "^24.0.0",
+    "typescript": "7.0.2"
+  },
+  "peerDependenciesMeta": {
+    "@deepseek-ai/dsh-tools": {
+      "optional": true
+    }
+  }
+}

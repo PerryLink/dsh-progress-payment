@@ -1,0 +1,14 @@
+$ node samples/quickstart/run.mjs --check
+dsh-progress-payment quickstart - synthetic progress declaration (not customer data)
+declaration: samples/quickstart/input/declaration-2026-10.csv (7 rows / 6 items)
+contract baseline: 6 items; batch pg_ea0edb1548cb530b
+period amount: 50763.60 CNY (declared 51627.60)
+cumulative: 614145.00 CNY / contract 725750.00 = 84.62%
+issues: 3 (over qty 1, price mismatch 1, duplicate 1)
+  row 4 010402001 E_PROGRESS_OVER_QTY 累计完成量 101.5 超过合同量 95
+  row 6 011702001 E_PROGRESS_PRICE_MISMATCH 申报合同单价 65.00 与合同基准 55.00 不符
+  row 7 010101003 E_PROGRESS_DUP_ITEM 清单编码 010101003 在本期申报里出现 2 次
+worksheet: exports/progress-audit-2026-10.csv 8 rows, 1291 bytes, sha256 24cca857d661...
+worksheet columns: 行号,清单编码,名称,单位,合同量,合同单价(元),本期完成量,累计完成量,本期金额(元),累计金额(元),累计比例(%),是否计入,问题代码,问题说明
+golden samples/quickstart/expected/result.json matches
+quickstart ok

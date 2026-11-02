@@ -1,0 +1,21 @@
+[
+  {
+    "path": "docs/assets/quickstart.png",
+    "kind": "quickstart",
+    "alt": "dsh-progress-payment quickstart terminal output",
+    "caption": "Real command: node samples/quickstart/run.mjs --check — a synthetic 7-row / 6-item declaration against a 6-item contract baseline yields 50,763.60 CNY for the period, 84.62% cumulative, 3 blocking issues (over quantity, price mismatch, duplicate item) and an 8-row review worksheet. Rendered from the captured terminal output.",
+    "command": "node samples/quickstart/run.mjs --check",
+    "run_at": "2026-11-02T15:05:00Z",
+    "output_sha256": "bdaa9e845c43bab3e29b0e48dddfb801af505e6e552ffc3b12351f59c12feff5",
+    "output_path": "samples/quickstart/expected/result.json",
+    "log": "docs/assets/quickstart.log",
+    "log_sha256": "582cc7f92d0a8ca7d7ee6030e5d1607b6c3609d0f55dd745f5296b9fd99f6710",
+    "image_sha256": "beeda8ec806af9221faf8f253cff5191232f0580fa6a6012112ee48f09ba8854"
+  },
+  {
+    "path": "docs/assets/dsh-progress-payment-flow.svg",
+    "kind": "flow",
+    "alt": "dsh-progress-payment workflow diagram",
+    "caption": "Pipeline diagram: local declaration CSV + contract baseline to integer-cent audit to local worksheet. Schematic, not test evidence."
+  }
+]

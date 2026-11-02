@@ -1,0 +1,108 @@
+{
+  "run_id": "progress-payment-1793632169395",
+  "scope": "PROGRESS-PAYMENT-S1",
+  "status": "pass",
+  "counted": false,
+  "note": "synthetic declaration + contract baseline only; no customer data, no network",
+  "metrics": [
+    {
+      "req_id": "PG-A01",
+      "metric": "ingest rows/items",
+      "threshold": "7 rows 6 items 6 contract",
+      "actual": "7 rows 6 items 6 contract",
+      "pass": true
+    },
+    {
+      "req_id": "PG-A02",
+      "metric": "period amount cents",
+      "threshold": "5076360",
+      "actual": "5076360",
+      "pass": true
+    },
+    {
+      "req_id": "PG-A03",
+      "metric": "cumulative ratio",
+      "threshold": "84.62",
+      "actual": "84.62",
+      "pass": true
+    },
+    {
+      "req_id": "PG-A04",
+      "metric": "cumulative amount cents",
+      "threshold": "61414500",
+      "actual": "61414500",
+      "pass": true
+    },
+    {
+      "req_id": "PG-A05",
+      "metric": "over quantity issue",
+      "threshold": "E_PROGRESS_OVER_QTY x1",
+      "actual": "over_qty=1",
+      "pass": true
+    },
+    {
+      "req_id": "PG-A06",
+      "metric": "price mismatch issue",
+      "threshold": "E_PROGRESS_PRICE_MISMATCH x1",
+      "actual": "price_mismatch=1",
+      "pass": true
+    },
+    {
+      "req_id": "PG-A07",
+      "metric": "duplicate item issue",
+      "threshold": "E_PROGRESS_DUP_ITEM x1",
+      "actual": "duplicate_items=1",
+      "pass": true
+    },
+    {
+      "req_id": "PG-A08",
+      "metric": "export sha256/rows",
+      "threshold": "sha equals file rows=8",
+      "actual": "8 rows 1291 bytes",
+      "pass": true
+    },
+    {
+      "req_id": "PG-A09",
+      "metric": "export path safety",
+      "threshold": "traversal rejected",
+      "actual": "E_PROGRESS_PATH_INVALID",
+      "pass": true
+    },
+    {
+      "req_id": "PG-A10",
+      "metric": "missing column error",
+      "threshold": "E_PROGRESS_CSV_ROW",
+      "actual": "E_PROGRESS_CSV_ROW",
+      "pass": true
+    },
+    {
+      "req_id": "PG-A11",
+      "metric": "unknown batch error",
+      "threshold": "E_PROGRESS_BATCH_NOT_FOUND",
+      "actual": "E_PROGRESS_BATCH_NOT_FOUND",
+      "pass": true
+    },
+    {
+      "req_id": "PG-A12",
+      "metric": "BOM + duplicate row",
+      "threshold": "BOM yes counted=no",
+      "actual": "bom=yes counted_no=yes",
+      "pass": true
+    },
+    {
+      "req_id": "PG-A13",
+      "metric": "English/reordered headers",
+      "threshold": "1 row",
+      "actual": "1 row 20000 milli",
+      "pass": true
+    },
+    {
+      "req_id": "PG-A14",
+      "metric": "invalid tolerance error",
+      "threshold": "E_PROGRESS_OPTION_INVALID",
+      "actual": "E_PROGRESS_OPTION_INVALID",
+      "pass": true
+    }
+  ],
+  "pass": true
+}

@@ -1,0 +1,206 @@
+{
+  "_note": "Real tool output. The export path is normalised to exports/<file>.csv (the run directory is a temp dir); everything else is verbatim. Amounts are integer cents.",
+  "sample": {
+    "declaration": {
+      "path": "samples/quickstart/input/declaration-2026-10.csv",
+      "bytes": 412,
+      "sha256": "b74c68756bbd882b7b627194d772df672155d84fa7d1028182598dfa10afa2c0"
+    },
+    "contract": {
+      "path": "samples/quickstart/input/contract-baseline.csv",
+      "bytes": 159,
+      "sha256": "dc42b8123b3a68aa63a2be29226f73d22c614974538513bd896af53a12c1e4d3"
+    }
+  },
+  "ingest": {
+    "batch_id": "pg_ea0edb1548cb530b",
+    "rows": 7,
+    "items": 6,
+    "contract_items": 6,
+    "declaration_sha256": "b74c68756bbd882b7b627194d772df672155d84fa7d1028182598dfa10afa2c0",
+    "contract_sha256": "dc42b8123b3a68aa63a2be29226f73d22c614974538513bd896af53a12c1e4d3"
+  },
+  "audit": {
+    "batch_id": "pg_ea0edb1548cb530b",
+    "currency": "CNY",
+    "items": [
+      {
+        "row": 1,
+        "item_code": "010101001",
+        "item_name": "平整场地",
+        "unit": "m2",
+        "declared_contract_qty": 1200,
+        "declared_contract_unit_price_cents": 350,
+        "contract_qty": 1200,
+        "contract_unit_price_cents": 350,
+        "period_qty": 300,
+        "cumulative_qty": 900,
+        "period_amount_cents": 105000,
+        "declared_period_amount_cents": 105000,
+        "cumulative_amount_cents": 315000,
+        "contract_amount_cents": 420000,
+        "cumulative_ratio_pct": 75,
+        "issue_codes": []
+      },
+      {
+        "row": 2,
+        "item_code": "010101003",
+        "item_name": "挖沟槽土方",
+        "unit": "m3",
+        "declared_contract_qty": 850,
+        "declared_contract_unit_price_cents": 2800,
+        "contract_qty": 850,
+        "contract_unit_price_cents": 2800,
+        "period_qty": 120,
+        "cumulative_qty": 520,
+        "period_amount_cents": 336000,
+        "declared_period_amount_cents": 336000,
+        "cumulative_amount_cents": 1456000,
+        "contract_amount_cents": 2380000,
+        "cumulative_ratio_pct": 61.18,
+        "issue_codes": []
+      },
+      {
+        "row": 3,
+        "item_code": "010401001",
+        "item_name": "混凝土基础",
+        "unit": "m3",
+        "declared_contract_qty": 260,
+        "declared_contract_unit_price_cents": 48000,
+        "contract_qty": 260,
+        "contract_unit_price_cents": 48000,
+        "period_qty": 25.92,
+        "cumulative_qty": 240.5,
+        "period_amount_cents": 1244160,
+        "declared_period_amount_cents": 1244160,
+        "cumulative_amount_cents": 11544000,
+        "contract_amount_cents": 12480000,
+        "cumulative_ratio_pct": 92.5,
+        "issue_codes": []
+      },
+      {
+        "row": 4,
+        "item_code": "010402001",
+        "item_name": "矩形柱",
+        "unit": "m3",
+        "declared_contract_qty": 95,
+        "declared_contract_unit_price_cents": 61000,
+        "contract_qty": 95,
+        "contract_unit_price_cents": 61000,
+        "period_qty": 12,
+        "cumulative_qty": 101.5,
+        "period_amount_cents": 732000,
+        "declared_period_amount_cents": 732000,
+        "cumulative_amount_cents": 6191500,
+        "contract_amount_cents": 5795000,
+        "cumulative_ratio_pct": 106.84,
+        "issue_codes": [
+          "E_PROGRESS_OVER_QTY"
+        ]
+      },
+      {
+        "row": 5,
+        "item_code": "010515001",
+        "item_name": "现浇构件钢筋",
+        "unit": "t",
+        "declared_contract_qty": 80,
+        "declared_contract_unit_price_cents": 520000,
+        "contract_qty": 80,
+        "contract_unit_price_cents": 520000,
+        "period_qty": 4.2,
+        "cumulative_qty": 62.4,
+        "period_amount_cents": 2184000,
+        "declared_period_amount_cents": 2184000,
+        "cumulative_amount_cents": 32448000,
+        "contract_amount_cents": 41600000,
+        "cumulative_ratio_pct": 78,
+        "issue_codes": []
+      },
+      {
+        "row": 6,
+        "item_code": "011702001",
+        "item_name": "基础模板",
+        "unit": "m2",
+        "declared_contract_qty": 1800,
+        "declared_contract_unit_price_cents": 6500,
+        "contract_qty": 1800,
+        "contract_unit_price_cents": 5500,
+        "period_qty": 86.4,
+        "cumulative_qty": 1720,
+        "period_amount_cents": 475200,
+        "declared_period_amount_cents": 561600,
+        "cumulative_amount_cents": 9460000,
+        "contract_amount_cents": 9900000,
+        "cumulative_ratio_pct": 95.56,
+        "issue_codes": [
+          "E_PROGRESS_PRICE_MISMATCH"
+        ]
+      }
+    ],
+    "issues": [
+      {
+        "row": 4,
+        "item_code": "010402001",
+        "item_name": "矩形柱",
+        "code": "E_PROGRESS_OVER_QTY",
+        "kind": "cumulative_over_contract",
+        "field": "cumulative_qty",
+        "message": "累计完成量 101.5 超过合同量 95（E_PROGRESS_OVER_QTY）｜下一步：核对合同量和变更签证；超量部分走变更或结算，不在本期支付",
+        "blocking": true
+      },
+      {
+        "row": 6,
+        "item_code": "011702001",
+        "item_name": "基础模板",
+        "code": "E_PROGRESS_PRICE_MISMATCH",
+        "kind": "price_mismatch",
+        "field": "contract_unit_price",
+        "message": "申报合同单价 65.00 与合同基准 55.00 不符（E_PROGRESS_PRICE_MISMATCH）｜下一步：本期金额按合同单价 55.00 重算，并要求申报方改正",
+        "blocking": true
+      },
+      {
+        "row": 7,
+        "item_code": "010101003",
+        "item_name": "挖沟槽土方",
+        "code": "E_PROGRESS_DUP_ITEM",
+        "kind": "duplicate_item",
+        "field": "item_code",
+        "message": "清单编码 010101003 在本期申报里出现 2 次（行 2、7）（E_PROGRESS_DUP_ITEM）｜下一步：确认哪一行是本期应报的；重复行不计入本期金额",
+        "blocking": true
+      }
+    ],
+    "summary": {
+      "items": 6,
+      "rows": 7,
+      "duplicate_rows": 1,
+      "contract_items": 6,
+      "period_amount_cents": 5076360,
+      "declared_period_amount_cents": 5162760,
+      "price_adjustment_cents": -86400,
+      "cumulative_amount_cents": 61414500,
+      "contract_amount_cents": 72575000,
+      "cumulative_ratio_pct": 84.62,
+      "issues": 3,
+      "blocking_issues": 3,
+      "over_qty": 1,
+      "price_mismatch": 1,
+      "duplicate_items": 1,
+      "contract_missing": 0,
+      "contract_mismatch": 0,
+      "qty_inconsistent": 0,
+      "status": "needs_review"
+    }
+  },
+  "export": {
+    "path": "exports/progress-audit-2026-10.csv",
+    "sha256": "24cca857d661d882968ffe16e05773636c6b669bbdd48c577fe416cc84b45e18",
+    "rows": 8,
+    "bytes": 1291,
+    "items": 6,
+    "issues": 3
+  },
+  "worksheet": {
+    "bom": true,
+    "text": "行号,清单编码,名称,单位,合同量,合同单价(元),本期完成量,累计完成量,本期金额(元),累计金额(元),累计比例(%),是否计入,问题代码,问题说明\n1,010101001,平整场地,m2,1200,3.50,300,900,1050.00,3150.00,75.00,是,,\n2,010101003,挖沟槽土方,m3,850,28.00,120,520,3360.00,14560.00,61.18,是,,\n3,010401001,混凝土基础,m3,260,480.00,25.92,240.5,12441.60,115440.00,92.50,是,,\n4,010402001,矩形柱,m3,95,610.00,12,101.5,7320.00,61915.00,106.84,是,E_PROGRESS_OVER_QTY,累计完成量 101.5 超过合同量 95（E_PROGRESS_OVER_QTY）｜下一步：核对合同量和变更签证；超量部分走变更或结算，不在本期支付\n5,010515001,现浇构件钢筋,t,80,5200.00,4.2,62.4,21840.00,324480.00,78.00,是,,\n6,011702001,基础模板,m2,1800,55.00,86.4,1720,4752.00,94600.00,95.56,是,E_PROGRESS_PRICE_MISMATCH,申报合同单价 65.00 与合同基准 55.00 不符（E_PROGRESS_PRICE_MISMATCH）｜下一步：本期金额按合同单价 55.00 重算，并要求申报方改正\n7,010101003,挖沟槽土方,m3,850,28.00,120,520,3360.00,14560.00,61.18,否,E_PROGRESS_DUP_ITEM,清单编码 010101003 在本期申报里重复出现（E_PROGRESS_DUP_ITEM）｜下一步：确认哪一行是本期应报的；重复行不计入本期金额\n"
+  }
+}
