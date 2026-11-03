@@ -92,7 +92,7 @@ No. Save the sheet as **CSV UTF-8** first. Excel-written UTF-8 CSVs with a BOM a
 
 ## Version
 
-`0.1.0-alpha.1` · 32 tests pass (`node --test test/*.test.mjs`).
+`0.1.0` · 32 tests pass (`node --test test/*.test.mjs`).
 
 > ⭐ If this helps, a star makes it easier for the next person to find it. Nothing is gated behind it.
 
