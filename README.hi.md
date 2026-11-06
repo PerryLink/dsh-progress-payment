@@ -1,8 +1,8 @@
 <div align="center">
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-progress-payment-flow-dark.svg">
-  <img src="docs/assets/dsh-progress-payment-flow-light.svg" width="100%" alt="dsh-progress-payment पाइपलाइन: घोषणा CSV (और वैकल्पिक अनुबंध आधार-रेखा CSV) → progress.ingest सत्यापन (R0) → progress.audit मात्रा-दर ऑडिट (R0) → progress.export समीक्षा वर्कशीट CSV (R1) → $DSH_HOME/dsh-progress-payment/exports/; पूरी तरह लोकल, स्रोत फ़ाइलें केवल-पढ़ने योग्य">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-progress-payment-hero-en-dark.webp">
+  <img src="docs/assets/dsh-progress-payment-hero-en-light.webp" width="100%" alt="dsh-progress-payment बैनर: बाईं ओर शीर्षक और मूल्य की दो पंक्तियाँ; दाईं ओर अवधि हस्ताक्षर कार्ड (अवधि राशि 50,763.60, घोषित 51,627.60, मूल्य समायोजन −864.00, संचित 614,145.00, संचित अनुपात 84.62%, needs_review), 3 अवरोधक समस्याएँ (मात्रा 101.5 > 95, मूल्य 65.00 ≠ 55.00, दोहराव ×2 गिना नहीं गया) और 8 पंक्तियों की निर्यात पट्टी (1,291 B, UTF-8 BOM, sha256); आँकड़े quickstart नमूने से">
 </picture>
 
 # dsh-progress-payment
@@ -38,6 +38,11 @@ dsh plugin --profile <profile> add dsh-progress-payment
 
 - **उपयुक्त**: मात्रा सर्वेक्षक, लागत इंजीनियर और साइट सुपरवाइज़र जो दसियों से हज़ारों मदों वाले मासिक प्रगति-भुगतान का ऑडिट करते हैं; प्रमाणपत्र पर हस्ताक्षर से पहले मात्रा और इकाई दर जाँचना; घोषणा, अनुबंध आधार-रेखा और समस्या-सूची को एक समीक्षा-योग्य CSV में रखना; स्थिर त्रुटि कोड और दोबारा चलाने योग्य गोल्डन सैंपल चाहने वाले वर्कफ़्लो।
 - **अनुपयुक्त**: मापन/निपटान सॉफ़्टवेयर या कानूनी सलाह का विकल्प; यह तय करना कि कोई परिवर्तन आदेश, दावा, रोक, कर या भुगतान अनुपात मान्य है या नहीं (यह पैकेज अधिक मात्रा दिखाता है, परिवर्तन को मंज़ूरी नहीं देता); स्कैन किए PDF या चित्रों का OCR (केवल CSV); अनुबंध आधार-रेखा के बिना स्वतंत्र मात्रा-दर सत्यापन (आधार-रेखा के बिना घोषित मान ही उपयोग होते हैं और यह कमी समस्या-सूची में दर्ज रहती है)।
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-progress-payment-flow-v5-dark.svg">
+  <img src="docs/assets/dsh-progress-payment-flow-v5-light.svg" width="100%" alt="dsh-progress-payment संरचना: घोषणा CSV (7 कॉलम) और वैकल्पिक अनुबंध आधार-रेखा CSV (3 कॉलम) progress.ingest से एक बैच बनाते हैं; progress.audit छह मदों को तीन अक्षों (अतिरिक्त मात्रा, मूल्य, दोहराव) पर जाँचता है, अवधि राशि और संचित अनुपात निकालता है, सारांश needs_review देता है; progress.export 8 पंक्तियों की शीट $DSH_HOME/dsh-progress-payment/exports/ में लिखता है और दोहराव पंक्ति को गिना नहीं गया चिह्नित करता है">
+</picture>
 
 ## तीन चरणों में शुरुआत
 
@@ -263,7 +268,7 @@ node --test test/*.test.mjs
 node scripts/gate.mjs
 ```
 
-वर्तमान संस्करण `0.1.0`; 32 टेस्ट पास (`node --test test/*.test.mjs`)। रिलीज़ गेट `node scripts/gate.mjs` = मेटाडेटा lint + सभी सार्वजनिक स्वीकृति पंक्तियाँ पास + counted quickstart पंक्ति मौजूद। हीरो पाइपलाइन चित्र [`scripts/gen-readme-assets.py`](scripts/gen-readme-assets.py) से प्रोग्रामेटिक रूप से बनता है (Python मानक लाइब्रेरी, शुद्ध SVG, कमांड-टोकन लेबल, हल्का/गहरा जोड़ा; कोई benchmark डेटा नहीं है, इसलिए evidence चार्ट नहीं बनता) और दोबारा चलाया जा सकता है; `docs/assets/quickstart.png` वास्तविक कैप्चर है, `docs/assets/quickstart.log` के साथ रखा गया है।
+वर्तमान संस्करण `0.1.0`; 32 टेस्ट पास (`node --test test/*.test.mjs`)। रिलीज़ गेट `node scripts/gate.mjs` = मेटाडेटा lint + सभी सार्वजनिक स्वीकृति पंक्तियाँ पास + counted quickstart पंक्ति मौजूद। बैनर और संरचना चित्र [`scripts/gen-readme-assets.py`](scripts/gen-readme-assets.py) से प्रोग्रामेटिक रूप से बनते हैं (चार 1440x576 webp बैनर Pillow से, 1100x660 संरचना चित्र हाथ से लिखे SVG से; हर आँकड़ा `samples/quickstart/expected/result.json` से शब्दशः लिया गया है; कोई benchmark डेटा नहीं है, इसलिए evidence चार्ट नहीं बनता) और दोबारा चलाए जा सकते हैं; `docs/assets/quickstart.png` वास्तविक कैप्चर है, `docs/assets/quickstart.log` के साथ रखा गया है।
 
 Topics: `dsh`, `dsh-plugin`, `deepseek-harness`, `progress-payment`, `construction`, `quantity-surveying`, `csv`, `perrylink`
 

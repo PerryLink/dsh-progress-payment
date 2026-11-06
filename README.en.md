@@ -1,8 +1,8 @@
 <div align="center">
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-progress-payment-flow-dark.svg">
-  <img src="docs/assets/dsh-progress-payment-flow-light.svg" width="100%" alt="dsh-progress-payment pipeline: declaration CSV (plus optional contract baseline CSV) → progress.ingest validation (R0) → progress.audit quantity/price audit (R0) → progress.export review worksheet CSV (R1) → $DSH_HOME/dsh-progress-payment/exports/; fully local, source files are read-only">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-progress-payment-hero-en-dark.webp">
+  <img src="docs/assets/dsh-progress-payment-hero-en-light.webp" width="100%" alt="dsh-progress-payment banner: left column is the wordmark and two value lines; on the right a period sign-off card (period amount 50,763.60, declared 51,627.60, price adjustment −864.00, cumulative 614,145.00, cumulative ratio 84.62%, needs_review), the 3 blocking issues (over quantity 101.5 > 95, price 65.00 ≠ 55.00, duplicate ×2 not counted) and the 8-row export strip (1,291 B, UTF-8 BOM, sha256); all numbers come from the quickstart fixture">
 </picture>
 
 # dsh-progress-payment
@@ -38,6 +38,11 @@ Take the current-period progress-payment declaration submitted by a main contrac
 
 - **Fits:** quantity surveyors, cost engineers and site supervisors auditing a monthly progress payment with tens to thousands of bill items; checking quantity and unit price before signing the certificate; keeping the declaration, contract baseline and issue list in one reviewable CSV; workflows that need stable error codes and a reproducible golden sample.
 - **Does not fit:** replacing estimating/settlement software or legal advice; deciding whether a change order, claim, retention, tax or pay ratio is valid (this package flags over-quantity but does not approve variations); OCR of scanned PDFs or images (CSV only); independent quantity/price verification without a contract baseline (without a baseline the declared values are used and the gap is recorded in the issue list).
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-progress-payment-flow-v5-dark.svg">
+  <img src="docs/assets/dsh-progress-payment-flow-v5-light.svg" width="100%" alt="dsh-progress-payment structure: a declaration CSV (7 columns) and an optional contract baseline CSV (3 columns) go through progress.ingest into one batch; progress.audit checks the 6 items on three axes (over quantity, price, duplicate), computes the period amount and cumulative ratio, and the summary reports needs_review; progress.export writes the 8-row worksheet under $DSH_HOME/dsh-progress-payment/exports/ and marks the duplicate row as not counted">
+</picture>
 
 ## Three-step setup
 
@@ -270,7 +275,7 @@ node --test test/*.test.mjs
 node scripts/gate.mjs
 ```
 
-Current version `0.1.0`; 32 tests pass (`node --test test/*.test.mjs`). Release gate `node scripts/gate.mjs` = metadata lint + every public acceptance row passing + the counted quickstart row present. The hero pipeline diagram is generated programmatically by [`scripts/gen-readme-assets.py`](scripts/gen-readme-assets.py) (Python standard library, pure SVG, command-token labels, light/dark pair; no benchmark data exists, so no evidence chart is emitted) and is safe to re-run; `docs/assets/quickstart.png` is a real captured screenshot, kept together with `docs/assets/quickstart.log`.
+Current version `0.1.0`; 32 tests pass (`node --test test/*.test.mjs`). Release gate `node scripts/gate.mjs` = metadata lint + every public acceptance row passing + the counted quickstart row present. The banner and the structure diagram are generated programmatically by [`scripts/gen-readme-assets.py`](scripts/gen-readme-assets.py) (Pillow for the four 1440x576 webp banners, hand-written SVG for the 1100x660 structure diagram; every number is copied from `samples/quickstart/expected/result.json`; no benchmark data exists, so no evidence chart is emitted) and both are safe to re-run; `docs/assets/quickstart.png` is a real captured screenshot, kept together with `docs/assets/quickstart.log`.
 
 Topics: `dsh`, `dsh-plugin`, `deepseek-harness`, `progress-payment`, `construction`, `quantity-surveying`, `csv`, `perrylink`
 

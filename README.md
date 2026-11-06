@@ -1,8 +1,8 @@
 <div align="center">
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-progress-payment-flow-dark.svg">
-  <img src="docs/assets/dsh-progress-payment-flow-light.svg" width="100%" alt="dsh-progress-payment 流水线：申报 CSV（+ 可选合同基准 CSV）→ progress.ingest 校验（R0）→ progress.audit 量价审核（R0）→ progress.export 审核底稿 CSV（R1）→ $DSH_HOME/dsh-progress-payment/exports/；全程本地，源文件只读">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-progress-payment-hero-zh-dark.webp">
+  <img src="docs/assets/dsh-progress-payment-hero-zh-light.webp" width="100%" alt="dsh-progress-payment 横幅：左侧标题与两行价值句；右侧本期签认卡（本期金额 50,763.60 元、申报 51,627.60、价差 −864.00、累计 614,145.00、累计比例 84.62%、needs_review）、3 条阻塞问题（超量 101.5>95、单价 65.00≠55.00、重复项 ×2 不计入）和导出条（底稿 8 行、1,291 B、UTF-8 BOM、sha256）；数字取自 quickstart 金标样例">
 </picture>
 
 # dsh-progress-payment
@@ -38,6 +38,11 @@ dsh plugin --profile <profile> add dsh-progress-payment
 
 - **适合**：造价、监理和商务人员每期几十到几千条清单项的进度款申报；先核对量和单价，再决定本期签认多少；把申报、合同基准和问题清单留成一份可复核的 CSV 底稿；需要稳定错误码和可复跑金标样例的场景。
 - **不适合**：替代计价软件、结算审核或法律意见；判断变更签证、索赔、质量扣款、税率和支付比例是否成立（本包只按合同基准提示超量，不替你做变更审批）；扫描件/PDF/图片的 OCR（只收 CSV）；没有合同基准却要求独立核验量价的申报（没有基准时只能用申报自带值计算，并会在问题清单里留痕）。
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-progress-payment-flow-v5-dark.svg">
+  <img src="docs/assets/dsh-progress-payment-flow-v5-light.svg" width="100%" alt="dsh-progress-payment 结构：申报 CSV（7 列）与可选的合同基准 CSV（3 列）经 progress.ingest 生成一个批次；progress.audit 把 6 个清单项按超量、单价、重复三个轴逐项核对，给出本期金额与累计比例，汇总本期 50,763.60、累计 614,145.00（84.62%）、状态 needs_review；progress.export 把 8 行底稿写到 $DSH_HOME/dsh-progress-payment/exports/，重复行标是否计入=否">
+</picture>
 
 ## 三步上手
 
@@ -255,7 +260,7 @@ node --test test/*.test.mjs
 node scripts/gate.mjs
 ```
 
-当前版本 `0.1.0`，32 项测试通过（`node --test test/*.test.mjs`）。发布门禁 `node scripts/gate.mjs` = 元数据 lint + 公开验收行全过 + quickstart 金标行存在。开头流程图由 [`scripts/gen-readme-assets.py`](scripts/gen-readme-assets.py) 程序化生成（Python 标准库，纯 SVG、命令 token 文案、深浅双版；没有 benchmark 数据，所以不生成 evidence 图），可重复执行；`docs/assets/quickstart.png` 为真实运行截图，配合 `docs/assets/quickstart.log` 保留。
+当前版本 `0.1.0`，32 项测试通过（`node --test test/*.test.mjs`）。发布门禁 `node scripts/gate.mjs` = 元数据 lint + 公开验收行全过 + quickstart 金标行存在。开头横幅与结构图由 [`scripts/gen-readme-assets.py`](scripts/gen-readme-assets.py) 程序化生成（Pillow 出 1440×576 深浅双版 webp，手写 SVG 出 1100×660 结构图；图内数字逐字取自 `samples/quickstart/expected/result.json`；没有 benchmark 数据，所以不生成 evidence 图），可重复执行；`docs/assets/quickstart.png` 为真实运行截图，配合 `docs/assets/quickstart.log` 保留。
 
 Topics：`dsh`、`dsh-plugin`、`deepseek-harness`、`progress-payment`、`construction`、`quantity-surveying`、`csv`、`perrylink`
 

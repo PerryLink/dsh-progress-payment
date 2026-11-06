@@ -1,8 +1,8 @@
 <div align="center">
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-progress-payment-flow-dark.svg">
-  <img src="docs/assets/dsh-progress-payment-flow-light.svg" width="100%" alt="Pipeline do dsh-progress-payment: CSV de declaração (mais CSV opcional da linha de base do contrato) → progress.ingest validação (R0) → progress.audit auditoria de quantidade e preço (R0) → progress.export CSV da planilha de revisão (R1) → $DSH_HOME/dsh-progress-payment/exports/; tudo local, os arquivos de origem são somente leitura">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-progress-payment-hero-en-dark.webp">
+  <img src="docs/assets/dsh-progress-payment-hero-en-light.webp" width="100%" alt="Banner do dsh-progress-payment: à esquerda o título e duas frases de valor; à direita o cartão de assinatura do período (valor do período 50,763.60, declarado 51,627.60, ajuste de preço −864.00, acumulado 614,145.00, rácio acumulado 84.62%, needs_review), as 3 ocorrências bloqueantes (excesso 101.5 > 95, preço 65.00 ≠ 55.00, duplicado ×2 não contado) e a faixa de exportação de 8 linhas (1,291 B, UTF-8 BOM, sha256); números do exemplo quickstart">
 </picture>
 
 # dsh-progress-payment
@@ -38,6 +38,11 @@ Pega a declaração de pagamento por medição do período enviada pela empreite
 
 - **Encaixa**: engenheiros de custos, medidores e fiscais de obra que auditam um pagamento mensal com dezenas a milhares de itens; conferir quantidade e preço antes de assinar o certificado; manter declaração, linha de base e lista de problemas em um único CSV revisável; fluxos que precisam de códigos de erro estáveis e de um exemplo dourado reproduzível.
 - **Não encaixa**: substituir software de medição ou liquidação, ou parecer jurídico; decidir se uma alteração, reclamação, retenção, imposto ou razão de pagamento é válido (este pacote sinaliza excesso de quantidade, mas não aprova variações); OCR de PDF digitalizado ou imagem (apenas CSV); verificação independente de quantidade e preço sem linha de base do contrato (sem linha de base usam-se os valores declarados e a lacuna fica registrada na lista de problemas).
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-progress-payment-flow-v5-dark.svg">
+  <img src="docs/assets/dsh-progress-payment-flow-v5-light.svg" width="100%" alt="Estrutura do dsh-progress-payment: um CSV de declaração (7 colunas) e um CSV opcional da linha de base do contrato (3 colunas) passam por progress.ingest e formam um lote; progress.audit verifica as 6 partidas em três eixos (excesso de quantidade, preço, duplicado), calcula o valor do período e o rácio acumulado, e o resumo dá needs_review; progress.export escreve a folha de 8 linhas em $DSH_HOME/dsh-progress-payment/exports/ e marca a linha duplicada como não contada">
+</picture>
 
 ## Instalação em três passos
 
@@ -263,7 +268,7 @@ node --test test/*.test.mjs
 node scripts/gate.mjs
 ```
 
-Versão atual `0.1.0`; 32 testes passam (`node --test test/*.test.mjs`). Portão de publicação `node scripts/gate.mjs` = lint de metadados + todas as linhas públicas de aceitação verdes + a linha contada do quickstart presente. O diagrama de cabeçalho é gerado por [`scripts/gen-readme-assets.py`](scripts/gen-readme-assets.py) (biblioteca padrão do Python, SVG puro, rótulos de tokens de comando, par claro/escuro; não há dados de benchmark, então nenhum gráfico de evidência é emitido) e pode ser reexecutado; `docs/assets/quickstart.png` é uma captura real, mantida junto com `docs/assets/quickstart.log`.
+Versão atual `0.1.0`; 32 testes passam (`node --test test/*.test.mjs`). Portão de publicação `node scripts/gate.mjs` = lint de metadados + todas as linhas públicas de aceitação verdes + a linha contada do quickstart presente. O banner e o diagrama de estrutura são gerados por [`scripts/gen-readme-assets.py`](scripts/gen-readme-assets.py) (Pillow para os quatro banners webp de 1440x576, SVG escrito à mão para o diagrama de 1100x660; cada número é copiado de `samples/quickstart/expected/result.json`; não há dados de benchmark, então nenhum gráfico de evidência é emitido) e podem ser reexecutados; `docs/assets/quickstart.png` é uma captura real, mantida junto com `docs/assets/quickstart.log`.
 
 Topics: `dsh`, `dsh-plugin`, `deepseek-harness`, `progress-payment`, `construction`, `quantity-surveying`, `csv`, `perrylink`
 
