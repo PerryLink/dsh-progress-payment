@@ -48,12 +48,12 @@ async function main() {
     const declarationCsv = readFileSync(path.join(root, 'samples', 'quickstart', 'input', 'declaration-2026-10.csv'), 'utf8')
     const contractCsv = readFileSync(path.join(root, 'samples', 'quickstart', 'input', 'contract-baseline.csv'), 'utf8')
 
-    const ingested = await tools['progress.ingest'].execute(
+    const ingested = await tools['progress_ingest'].execute(
       { declaration_csv: declarationCsv, contract_csv: contractCsv, source_name: 'declaration-2026-10.csv' },
       exec,
     )
-    const audit = await tools['progress.audit'].execute({ batch_id: ingested.batch_id }, exec)
-    const exported = await tools['progress.export'].execute(
+    const audit = await tools['progress_audit'].execute({ batch_id: ingested.batch_id }, exec)
+    const exported = await tools['progress_export'].execute(
       { batch_id: ingested.batch_id, filename: 'progress-audit-2026-10.csv' },
       exec,
     )
@@ -62,14 +62,14 @@ async function main() {
       'item_code,period_qty,cumulative_qty,contract_unit_price,contract_qty,name,unit\nA-1,20,60,500.00,100,混凝土,m3\n',
     )
     const missingColumn = await errorCode(
-      tools['progress.ingest'].execute({ declaration_csv: '清单编码,名称,单位,合同量,合同单价,本期完成量\nA-1,混凝土,m3,100,500.00,20\n' }, exec),
+      tools['progress_ingest'].execute({ declaration_csv: '清单编码,名称,单位,合同量,合同单价,本期完成量\nA-1,混凝土,m3,100,500.00,20\n' }, exec),
     )
-    const unknownBatch = await errorCode(tools['progress.audit'].execute({ batch_id: 'pg_missing' }, exec))
+    const unknownBatch = await errorCode(tools['progress_audit'].execute({ batch_id: 'pg_missing' }, exec))
     const traversal = await errorCode(
-      tools['progress.export'].execute({ batch_id: ingested.batch_id, filename: '../evil.csv' }, exec),
+      tools['progress_export'].execute({ batch_id: ingested.batch_id, filename: '../evil.csv' }, exec),
     )
     const badTolerance = await errorCode(
-      tools['progress.audit'].execute({ batch_id: ingested.batch_id, price_tolerance_bps: -1 }, exec),
+      tools['progress_audit'].execute({ batch_id: ingested.batch_id, price_tolerance_bps: -1 }, exec),
     )
 
     // ACCEPTANCE.csv uses a simple comma-split schema: keep every field free of commas.

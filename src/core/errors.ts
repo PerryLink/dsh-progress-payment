@@ -24,7 +24,7 @@ const PROGRESS_HUMAN: Record<ProgressErrorCode, HumanMessage> = {
   },
   E_PROGRESS_BATCH_NOT_FOUND: {
     text: '找不到这批申报',
-    next: '先运行 progress.ingest 导入 CSV 拿到 batch_id，再运行 progress.audit 或 progress.export',
+    next: '先运行 progress_ingest 导入 CSV 拿到 batch_id，再运行 progress_audit 或 progress_export',
   },
   E_PROGRESS_OPTION_INVALID: {
     text: '审核参数不合法',

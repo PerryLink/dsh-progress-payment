@@ -41,7 +41,7 @@ Take the current-period progress-payment declaration submitted by a main contrac
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-progress-payment-flow-v5-dark.svg">
-  <img src="docs/assets/dsh-progress-payment-flow-v5-light.svg" width="100%" alt="dsh-progress-payment structure: a declaration CSV (7 columns) and an optional contract baseline CSV (3 columns) go through progress.ingest into one batch; progress.audit checks the 6 items on three axes (over quantity, price, duplicate), computes the period amount and cumulative ratio, and the summary reports needs_review; progress.export writes the 8-row worksheet under $DSH_HOME/dsh-progress-payment/exports/ and marks the duplicate row as not counted">
+  <img src="docs/assets/dsh-progress-payment-flow-v5-light.svg" width="100%" alt="dsh-progress-payment structure: a declaration CSV (7 columns) and an optional contract baseline CSV (3 columns) go through progress_ingest into one batch; progress_audit checks the 6 items on three axes (over quantity, price, duplicate), computes the period amount and cumulative ratio, and the summary reports needs_review; progress_export writes the 8-row worksheet under $DSH_HOME/dsh-progress-payment/exports/ and marks the duplicate row as not counted">
 </picture>
 
 ## Three-step setup
@@ -80,9 +80,9 @@ Tool names are stable API; tool descriptions stay in English to match runtime ou
 
 | Tool | Purpose | Risk |
 |---|---|---|
-| `progress.ingest` | Import the declaration CSV and optional contract baseline CSV; return `batch_id`, rows, item count and sha256; the batch lives in session memory only | R0 |
-| `progress.audit` | Audit period amount, cumulative ratio, over-contract quantity, price mismatch, missing/mismatched baseline, cumulative-below-period and duplicate items; return the issue list; integer cents | R0 |
-| `progress.export` | Re-run the audit and write the review worksheet CSV (UTF-8 BOM); return path, rows, bytes and sha256 | R1 local write |
+| `progress_ingest` | Import the declaration CSV and optional contract baseline CSV; return `batch_id`, rows, item count and sha256; the batch lives in session memory only | R0 |
+| `progress_audit` | Audit period amount, cumulative ratio, over-contract quantity, price mismatch, missing/mismatched baseline, cumulative-below-period and duplicate items; return the issue list; integer cents | R0 |
+| `progress_export` | Re-run the audit and write the review worksheet CSV (UTF-8 BOM); return path, rows, bytes and sha256 | R1 local write |
 
 - **Contract baseline wins** — when supplied, its quantities and prices are authoritative; the declaration's own contract quantity/price is only a cross-check, and a difference raises `E_PROGRESS_CONTRACT_MISMATCH` or `E_PROGRESS_PRICE_MISMATCH`.
 - **Integer-cent money** — quantities up to 3 decimals, prices/amounts up to 2; every amount is computed in integer cents and rounded half-up at the cent, never by accumulating floats.
@@ -109,9 +109,9 @@ item_code,contract_qty,contract_unit_price
 
 ## Output
 
-- `progress.ingest`: `batch_id`, `rows`, `items`, `contract_items`, `declaration_sha256`, `contract_sha256`. The `batch_id` is deterministic for the same CSV pair, but the batch lives in session memory only and is not persisted.
-- `progress.audit`: `items[]` carries the contract quantity/price, period quantity, cumulative quantity, period amount, cumulative amount, contract amount, cumulative ratio and issue codes; `issues[]` is sorted by row; `summary` carries the period/declared/contract amounts, the price adjustment, the cumulative ratio, issue counts and `status` (`ok` / `needs_review`). All amounts are integer cents.
-- `progress.export`: a review worksheet CSV (UTF-8 BOM, Excel-ready), one row per declaration line, duplicate rows marked as not counted; written under `$DSH_HOME/dsh-progress-payment/exports/`, returning path, rows, bytes and sha256. The worksheet header is:
+- `progress_ingest`: `batch_id`, `rows`, `items`, `contract_items`, `declaration_sha256`, `contract_sha256`. The `batch_id` is deterministic for the same CSV pair, but the batch lives in session memory only and is not persisted.
+- `progress_audit`: `items[]` carries the contract quantity/price, period quantity, cumulative quantity, period amount, cumulative amount, contract amount, cumulative ratio and issue codes; `issues[]` is sorted by row; `summary` carries the period/declared/contract amounts, the price adjustment, the cumulative ratio, issue counts and `status` (`ok` / `needs_review`). All amounts are integer cents.
+- `progress_export`: a review worksheet CSV (UTF-8 BOM, Excel-ready), one row per declaration line, duplicate rows marked as not counted; written under `$DSH_HOME/dsh-progress-payment/exports/`, returning path, rows, bytes and sha256. The worksheet header is:
 
 ```text
 行号,清单编码,名称,单位,合同量,合同单价(元),本期完成量,累计完成量,本期金额(元),累计金额(元),累计比例(%),是否计入,问题代码,问题说明
@@ -153,26 +153,26 @@ This plugin has **no Config keys** — everything is tunable through the three t
 
 | Tool | Parameter | Required | Meaning |
 |---|---|---|---|
-| `progress.ingest` | `declaration_csv` | yes | Text content of the current-period declaration CSV |
-| `progress.ingest` | `contract_csv` | no | Text content of the contract baseline CSV; without it the declared contract quantity/price is used |
-| `progress.ingest` | `source_name` | no | Source label, default `declaration.csv`; identification only |
-| `progress.audit` | `batch_id` | yes | Batch id returned by `progress.ingest` |
-| `progress.audit` | `price_tolerance_bps` | no | Unit-price tolerance in basis points; default 0 (exact), a negative or NaN value raises `E_PROGRESS_OPTION_INVALID` |
-| `progress.export` | `batch_id` | yes | Same as above |
-| `progress.export` | `filename` | no | Export filename, `[A-Za-z0-9._-]` only, max 120 chars; defaults to `progress-audit-<batch short id>.csv` |
-| `progress.export` | `price_tolerance_bps` | no | Unit-price tolerance for the re-run audit, default 0 |
+| `progress_ingest` | `declaration_csv` | yes | Text content of the current-period declaration CSV |
+| `progress_ingest` | `contract_csv` | no | Text content of the contract baseline CSV; without it the declared contract quantity/price is used |
+| `progress_ingest` | `source_name` | no | Source label, default `declaration.csv`; identification only |
+| `progress_audit` | `batch_id` | yes | Batch id returned by `progress_ingest` |
+| `progress_audit` | `price_tolerance_bps` | no | Unit-price tolerance in basis points; default 0 (exact), a negative or NaN value raises `E_PROGRESS_OPTION_INVALID` |
+| `progress_export` | `batch_id` | yes | Same as above |
+| `progress_export` | `filename` | no | Export filename, `[A-Za-z0-9._-]` only, max 120 chars; defaults to `progress-audit-<batch short id>.csv` |
+| `progress_export` | `price_tolerance_bps` | no | Unit-price tolerance for the re-run audit, default 0 |
 
 Call examples (tool surface):
 
 ```sh
 # 1) import the declaration (tool surface)
-#    progress.ingest({ declaration_csv, contract_csv })
+#    progress_ingest({ declaration_csv, contract_csv })
 
 # 2) audit (tool surface)
-#    progress.audit({ batch_id })
+#    progress_audit({ batch_id })
 
 # 3) export the worksheet (tool surface)
-#    progress.export({ batch_id, filename: "progress-audit-2026-10.csv" })
+#    progress_export({ batch_id, filename: "progress-audit-2026-10.csv" })
 ```
 
 Tests can override the local write root with the `DSH_PROGRESS_PAYMENT_HOME` environment variable; the default is exactly `$DSH_HOME/dsh-progress-payment`.
@@ -203,7 +203,7 @@ No. Only the first occurrence counts toward the period amount; the other rows ar
 <details>
 <summary>Does it modify or upload my CSV?</summary>
 
-No. It reads the named CSVs, writes only under `$DSH_HOME/dsh-progress-payment/exports/`, and never uses the network, a model call or an upload. The `progress.ingest` batch lives in session memory, so a new session needs a fresh import.
+No. It reads the named CSVs, writes only under `$DSH_HOME/dsh-progress-payment/exports/`, and never uses the network, a model call or an upload. The `progress_ingest` batch lives in session memory, so a new session needs a fresh import.
 
 </details>
 
@@ -221,7 +221,7 @@ Write: `$DSH_HOME/dsh-progress-payment/exports/` (review worksheet CSV) only; so
 Network: no.
 External systems: none.
 
-`progress.ingest` and `progress.audit` are **R0** (read-only; `ingest` keeps the batch in session memory and writes no file). `progress.export` is **R1** (local write under `$DSH_HOME/dsh-progress-payment/exports/`). `DSH_PROGRESS_PAYMENT_HOME` can override the local write root for tests; the default is exactly `$DSH_HOME/dsh-progress-payment`.
+`progress_ingest` and `progress_audit` are **R0** (read-only; `ingest` keeps the batch in session memory and writes no file). `progress_export` is **R1** (local write under `$DSH_HOME/dsh-progress-payment/exports/`). `DSH_PROGRESS_PAYMENT_HOME` can override the local write root for tests; the default is exactly `$DSH_HOME/dsh-progress-payment`.
 
 ## Acceptance evidence
 
@@ -275,7 +275,7 @@ node --test test/*.test.mjs
 node scripts/gate.mjs
 ```
 
-Current version `0.1.0`; 32 tests pass (`node --test test/*.test.mjs`). Release gate `node scripts/gate.mjs` = metadata lint + every public acceptance row passing + the counted quickstart row present. The banner and the structure diagram are generated programmatically by [`scripts/gen-readme-assets.py`](scripts/gen-readme-assets.py) (Pillow for the four 1440x576 webp banners, hand-written SVG for the 1100x660 structure diagram; every number is copied from `samples/quickstart/expected/result.json`; no benchmark data exists, so no evidence chart is emitted) and both are safe to re-run; `docs/assets/quickstart.png` is a real captured screenshot, kept together with `docs/assets/quickstart.log`.
+Current version `0.2.0`; 33 tests pass (`node --test test/*.test.mjs`). Release gate `node scripts/gate.mjs` = metadata lint + every public acceptance row passing + the counted quickstart row present. The banner and the structure diagram are generated programmatically by [`scripts/gen-readme-assets.py`](scripts/gen-readme-assets.py) (Pillow for the four 1440x576 webp banners, hand-written SVG for the 1100x660 structure diagram; every number is copied from `samples/quickstart/expected/result.json`; no benchmark data exists, so no evidence chart is emitted) and both are safe to re-run; `docs/assets/quickstart.png` is a real captured screenshot, kept together with `docs/assets/quickstart.log`.
 
 Topics: `dsh`, `dsh-plugin`, `deepseek-harness`, `progress-payment`, `construction`, `quantity-surveying`, `csv`, `perrylink`
 

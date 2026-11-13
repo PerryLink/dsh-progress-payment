@@ -1,6 +1,6 @@
 {
   "name": "dsh-progress-payment",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Audit construction progress-payment declarations against the contract baseline and export a review worksheet; amounts in integer cents.",
   "type": "module",
   "main": "./lib/plugin/index.js",

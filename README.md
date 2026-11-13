@@ -41,7 +41,7 @@ dsh plugin --profile <profile> add dsh-progress-payment
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-progress-payment-flow-v5-dark.svg">
-  <img src="docs/assets/dsh-progress-payment-flow-v5-light.svg" width="100%" alt="dsh-progress-payment 结构：申报 CSV（7 列）与可选的合同基准 CSV（3 列）经 progress.ingest 生成一个批次；progress.audit 把 6 个清单项按超量、单价、重复三个轴逐项核对，给出本期金额与累计比例，汇总本期 50,763.60、累计 614,145.00（84.62%）、状态 needs_review；progress.export 把 8 行底稿写到 $DSH_HOME/dsh-progress-payment/exports/，重复行标是否计入=否">
+  <img src="docs/assets/dsh-progress-payment-flow-v5-light.svg" width="100%" alt="dsh-progress-payment 结构：申报 CSV（7 列）与可选的合同基准 CSV（3 列）经 progress_ingest 生成一个批次；progress_audit 把 6 个清单项按超量、单价、重复三个轴逐项核对，给出本期金额与累计比例，汇总本期 50,763.60、累计 614,145.00（84.62%）、状态 needs_review；progress_export 把 8 行底稿写到 $DSH_HOME/dsh-progress-payment/exports/，重复行标是否计入=否">
 </picture>
 
 ## 三步上手
@@ -80,9 +80,9 @@ dsh plugin --profile <profile> add dsh-progress-payment
 
 | 工具 | 用途 | 风险 |
 |---|---|---|
-| `progress.ingest` | 导入本期申报 CSV 与可选合同基准 CSV，返回 `batch_id`、行数、清单项数和 sha256；批次只存在当前会话内存 | R0 |
-| `progress.audit` | 审核：本期金额、累计比例、超合同量、单价不符、合同基准缺失/不符、累计小于本期、重复清单项；返回问题清单，金额整数分 | R0 |
-| `progress.export` | 重跑审核并写审核底稿 CSV（UTF-8 BOM），返回路径、行数、字节数和 sha256 | R1 本地写 |
+| `progress_ingest` | 导入本期申报 CSV 与可选合同基准 CSV，返回 `batch_id`、行数、清单项数和 sha256；批次只存在当前会话内存 | R0 |
+| `progress_audit` | 审核：本期金额、累计比例、超合同量、单价不符、合同基准缺失/不符、累计小于本期、重复清单项；返回问题清单，金额整数分 | R0 |
+| `progress_export` | 重跑审核并写审核底稿 CSV（UTF-8 BOM），返回路径、行数、字节数和 sha256 | R1 本地写 |
 
 - **合同基准优先** —— 给了基准就以基准的量和单价为准；申报里自带的合同量/单价只作对照，不一致会报 `E_PROGRESS_CONTRACT_MISMATCH` 或 `E_PROGRESS_PRICE_MISMATCH`。
 - **整数分金额** —— 数量最多 3 位小数、单价/金额最多 2 位；金额全程整数分、按分四舍五入，不做浮点累加。
@@ -100,9 +100,9 @@ dsh plugin --profile <profile> add dsh-progress-payment
 
 ## 输出
 
-- `progress.ingest`：`batch_id`、`rows`、`items`、`contract_items`、`declaration_sha256`、`contract_sha256`；同一对 CSV 的 `batch_id` 是确定的，但批次只存在当前会话内存，不落盘。
-- `progress.audit`：`items[]` 给出每个清单项的合同量/单价、本期完成量、累计完成量、本期金额、累计金额、合同金额、累计比例和问题代码；`issues[]` 按行号排序；`summary` 给出本期/申报/合同金额、差额、累计比例、问题计数和 `status`（`ok` / `needs_review`）；金额都是整数分。
-- `progress.export`：审核底稿 CSV（UTF-8 BOM，Excel 直接打开不乱码），表头为 `行号,清单编码,名称,单位,合同量,合同单价(元),本期完成量,累计完成量,本期金额(元),累计金额(元),累计比例(%),是否计入,问题代码,问题说明`；一行一条申报记录，重复行标 `是否计入=否`；写到 `$DSH_HOME/dsh-progress-payment/exports/`，返回路径、行数、字节数和 sha256。
+- `progress_ingest`：`batch_id`、`rows`、`items`、`contract_items`、`declaration_sha256`、`contract_sha256`；同一对 CSV 的 `batch_id` 是确定的，但批次只存在当前会话内存，不落盘。
+- `progress_audit`：`items[]` 给出每个清单项的合同量/单价、本期完成量、累计完成量、本期金额、累计金额、合同金额、累计比例和问题代码；`issues[]` 按行号排序；`summary` 给出本期/申报/合同金额、差额、累计比例、问题计数和 `status`（`ok` / `needs_review`）；金额都是整数分。
+- `progress_export`：审核底稿 CSV（UTF-8 BOM，Excel 直接打开不乱码），表头为 `行号,清单编码,名称,单位,合同量,合同单价(元),本期完成量,累计完成量,本期金额(元),累计金额(元),累计比例(%),是否计入,问题代码,问题说明`；一行一条申报记录，重复行标 `是否计入=否`；写到 `$DSH_HOME/dsh-progress-payment/exports/`，返回路径、行数、字节数和 sha256。
 - **不改原 CSV**，不上传、不联网、不调用模型。
 
 ### 审核规则
@@ -138,26 +138,26 @@ node samples/quickstart/run.mjs --check
 
 | 工具 | 参数 | 必填 | 含义 |
 |---|---|---|---|
-| `progress.ingest` | `declaration_csv` | 是 | 本期申报 CSV 的文本内容（工具面直接传文件内容） |
-| `progress.ingest` | `contract_csv` | 否 | 合同基准 CSV 的文本内容；不传就只用申报自带的合同量/单价 |
-| `progress.ingest` | `source_name` | 否 | 申报来源名，默认 `declaration.csv`，只作标识 |
-| `progress.audit` | `batch_id` | 是 | `progress.ingest` 返回的批次 id |
-| `progress.audit` | `price_tolerance_bps` | 否 | 单价容差，单位万分之一；默认 0（精确比对），传负数/NaN 报 `E_PROGRESS_OPTION_INVALID` |
-| `progress.export` | `batch_id` | 是 | 同上 |
-| `progress.export` | `filename` | 否 | 导出文件名，只允许 `[A-Za-z0-9._-]`、最长 120 字符；默认 `progress-audit-<batch 短号>.csv` |
-| `progress.export` | `price_tolerance_bps` | 否 | 重跑审核时的单价容差，默认 0 |
+| `progress_ingest` | `declaration_csv` | 是 | 本期申报 CSV 的文本内容（工具面直接传文件内容） |
+| `progress_ingest` | `contract_csv` | 否 | 合同基准 CSV 的文本内容；不传就只用申报自带的合同量/单价 |
+| `progress_ingest` | `source_name` | 否 | 申报来源名，默认 `declaration.csv`，只作标识 |
+| `progress_audit` | `batch_id` | 是 | `progress_ingest` 返回的批次 id |
+| `progress_audit` | `price_tolerance_bps` | 否 | 单价容差，单位万分之一；默认 0（精确比对），传负数/NaN 报 `E_PROGRESS_OPTION_INVALID` |
+| `progress_export` | `batch_id` | 是 | 同上 |
+| `progress_export` | `filename` | 否 | 导出文件名，只允许 `[A-Za-z0-9._-]`、最长 120 字符；默认 `progress-audit-<batch 短号>.csv` |
+| `progress_export` | `price_tolerance_bps` | 否 | 重跑审核时的单价容差，默认 0 |
 
 调用示例（工具面）：
 
 ```sh
 # 1) 导入申报（工具面）
-#    progress.ingest({ declaration_csv, contract_csv })
+#    progress_ingest({ declaration_csv, contract_csv })
 
 # 2) 审核（工具面）
-#    progress.audit({ batch_id })
+#    progress_audit({ batch_id })
 
 # 3) 导出底稿（工具面）
-#    progress.export({ batch_id, filename: "progress-audit-2026-10.csv" })
+#    progress_export({ batch_id, filename: "progress-audit-2026-10.csv" })
 ```
 
 测试可用环境变量 `DSH_PROGRESS_PAYMENT_HOME` 覆盖本地写根目录；默认严格等于 `$DSH_HOME/dsh-progress-payment`。
@@ -188,7 +188,7 @@ node samples/quickstart/run.mjs --check
 <details>
 <summary>会改我的 CSV 或上传数据吗？</summary>
 
-不会。只读用户指定的 CSV；只在本地 `$DSH_HOME/dsh-progress-payment/exports/` 写底稿；不联网、不调用模型、不上传。`progress.ingest` 的批次只存在当前会话内存里，换会话后需要重新导入。
+不会。只读用户指定的 CSV；只在本地 `$DSH_HOME/dsh-progress-payment/exports/` 写底稿；不联网、不调用模型、不上传。`progress_ingest` 的批次只存在当前会话内存里，换会话后需要重新导入。
 
 </details>
 
@@ -206,7 +206,7 @@ node samples/quickstart/run.mjs --check
 联网：否。
 外部系统：无。
 
-`progress.ingest`、`progress.audit` 标 **R0**（只读；`ingest` 只把批次写进当前会话内存，不落盘）；`progress.export` 标 **R1**（本地写，只写 `$DSH_HOME/dsh-progress-payment/exports/`）。测试可用 `DSH_PROGRESS_PAYMENT_HOME` 覆盖本地写根目录，默认严格等于 `$DSH_HOME/dsh-progress-payment`。
+`progress_ingest`、`progress_audit` 标 **R0**（只读；`ingest` 只把批次写进当前会话内存，不落盘）；`progress_export` 标 **R1**（本地写，只写 `$DSH_HOME/dsh-progress-payment/exports/`）。测试可用 `DSH_PROGRESS_PAYMENT_HOME` 覆盖本地写根目录，默认严格等于 `$DSH_HOME/dsh-progress-payment`。
 
 ## 验收证据
 
@@ -260,7 +260,7 @@ node --test test/*.test.mjs
 node scripts/gate.mjs
 ```
 
-当前版本 `0.1.0`，32 项测试通过（`node --test test/*.test.mjs`）。发布门禁 `node scripts/gate.mjs` = 元数据 lint + 公开验收行全过 + quickstart 金标行存在。开头横幅与结构图由 [`scripts/gen-readme-assets.py`](scripts/gen-readme-assets.py) 程序化生成（Pillow 出 1440×576 深浅双版 webp，手写 SVG 出 1100×660 结构图；图内数字逐字取自 `samples/quickstart/expected/result.json`；没有 benchmark 数据，所以不生成 evidence 图），可重复执行；`docs/assets/quickstart.png` 为真实运行截图，配合 `docs/assets/quickstart.log` 保留。
+当前版本 `0.2.0`，33 项测试通过（`node --test test/*.test.mjs`）。发布门禁 `node scripts/gate.mjs` = 元数据 lint + 公开验收行全过 + quickstart 金标行存在。开头横幅与结构图由 [`scripts/gen-readme-assets.py`](scripts/gen-readme-assets.py) 程序化生成（Pillow 出 1440×576 深浅双版 webp，手写 SVG 出 1100×660 结构图；图内数字逐字取自 `samples/quickstart/expected/result.json`；没有 benchmark 数据，所以不生成 evidence 图），可重复执行；`docs/assets/quickstart.png` 为真实运行截图，配合 `docs/assets/quickstart.log` 保留。
 
 Topics：`dsh`、`dsh-plugin`、`deepseek-harness`、`progress-payment`、`construction`、`quantity-surveying`、`csv`、`perrylink`
 

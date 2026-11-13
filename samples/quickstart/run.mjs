@@ -48,12 +48,12 @@ async function run() {
     const tools = Object.fromEntries(createTools({ batches: new MemoryTable(), baseDir: tempDir }).map((tool) => [tool.name, tool]))
     const exec = { callId: 'quickstart', agent: { id: 'quickstart' } }
 
-    const ingest = await tools['progress.ingest'].execute(
+    const ingest = await tools['progress_ingest'].execute(
       { declaration_csv: declarationText, contract_csv: contractText, source_name: 'declaration-2026-10.csv' },
       exec,
     )
-    const audit = await tools['progress.audit'].execute({ batch_id: ingest.batch_id }, exec)
-    const exported = await tools['progress.export'].execute(
+    const audit = await tools['progress_audit'].execute({ batch_id: ingest.batch_id }, exec)
+    const exported = await tools['progress_export'].execute(
       { batch_id: ingest.batch_id, filename: 'progress-audit-2026-10.csv' },
       exec,
     )

@@ -41,7 +41,7 @@ Pega a declaração de pagamento por medição do período enviada pela empreite
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-progress-payment-flow-v5-dark.svg">
-  <img src="docs/assets/dsh-progress-payment-flow-v5-light.svg" width="100%" alt="Estrutura do dsh-progress-payment: um CSV de declaração (7 colunas) e um CSV opcional da linha de base do contrato (3 colunas) passam por progress.ingest e formam um lote; progress.audit verifica as 6 partidas em três eixos (excesso de quantidade, preço, duplicado), calcula o valor do período e o rácio acumulado, e o resumo dá needs_review; progress.export escreve a folha de 8 linhas em $DSH_HOME/dsh-progress-payment/exports/ e marca a linha duplicada como não contada">
+  <img src="docs/assets/dsh-progress-payment-flow-v5-light.svg" width="100%" alt="Estrutura do dsh-progress-payment: um CSV de declaração (7 colunas) e um CSV opcional da linha de base do contrato (3 colunas) passam por progress_ingest e formam um lote; progress_audit verifica as 6 partidas em três eixos (excesso de quantidade, preço, duplicado), calcula o valor do período e o rácio acumulado, e o resumo dá needs_review; progress_export escreve a folha de 8 linhas em $DSH_HOME/dsh-progress-payment/exports/ e marca a linha duplicada como não contada">
 </picture>
 
 ## Instalação em três passos
@@ -80,9 +80,9 @@ Os nomes das ferramentas são API estável; as descrições permanecem em inglê
 
 | Ferramenta | Propósito | Risco |
 |---|---|---|
-| `progress.ingest` | Importa o CSV de declaração e o CSV opcional da linha de base; devolve `batch_id`, linhas, número de itens e sha256; o lote só vive na memória da sessão | R0 |
-| `progress.audit` | Audita valor do período, razão acumulada, quantidade acima do contrato, preço divergente, linha de base ausente/divergente, acumulado menor que o período e itens duplicados; devolve a lista de problemas; centavos inteiros | R0 |
-| `progress.export` | Reexecuta a auditoria e grava o CSV da planilha de revisão (UTF-8 BOM); devolve caminho, linhas, bytes e sha256 | R1 gravação local |
+| `progress_ingest` | Importa o CSV de declaração e o CSV opcional da linha de base; devolve `batch_id`, linhas, número de itens e sha256; o lote só vive na memória da sessão | R0 |
+| `progress_audit` | Audita valor do período, razão acumulada, quantidade acima do contrato, preço divergente, linha de base ausente/divergente, acumulado menor que o período e itens duplicados; devolve a lista de problemas; centavos inteiros | R0 |
+| `progress_export` | Reexecuta a auditoria e grava o CSV da planilha de revisão (UTF-8 BOM); devolve caminho, linhas, bytes e sha256 | R1 gravação local |
 
 - **A linha de base manda** — quando fornecida, suas quantidades e preços são a autoridade; a quantidade/preço de contrato declarados servem apenas de contraste, e uma diferença gera `E_PROGRESS_CONTRACT_MISMATCH` ou `E_PROGRESS_PRICE_MISMATCH`.
 - **Dinheiro em centavos inteiros** — quantidades até 3 casas, preços/valores até 2; todo valor é calculado em centavos inteiros e arredondado ao centavo, sem acumular erro de ponto flutuante.
@@ -106,9 +106,9 @@ item_code,item_name,unit,contract_qty,contract_unit_price,period_qty,cumulative_
 
 ## Saída
 
-- `progress.ingest`: `batch_id`, `rows`, `items`, `contract_items`, `declaration_sha256`, `contract_sha256`. O `batch_id` é determinístico para o mesmo par de CSV, mas o lote só vive na memória da sessão e não é persistido.
-- `progress.audit`: `items[]` com quantidade/preço de contrato, quantidade do período, quantidade acumulada, valor do período, valor acumulado, valor de contrato, razão acumulada e códigos de problema; `issues[]` ordenado por linha; `summary` com valores do período/declarado/contrato, ajuste de preço, razão acumulada, contagens e `status` (`ok` / `needs_review`). Todos os valores são centavos inteiros.
-- `progress.export`: CSV da planilha de revisão (UTF-8 BOM, pronto para Excel) com cabeçalho `行号,清单编码,名称,单位,合同量,合同单价(元),本期完成量,累计完成量,本期金额(元),累计金额(元),累计比例(%),是否计入,问题代码,问题说明`; uma linha por linha de declaração, duplicadas marcadas `是否计入=否`; gravado em `$DSH_HOME/dsh-progress-payment/exports/` e devolve caminho, linhas, bytes e sha256.
+- `progress_ingest`: `batch_id`, `rows`, `items`, `contract_items`, `declaration_sha256`, `contract_sha256`. O `batch_id` é determinístico para o mesmo par de CSV, mas o lote só vive na memória da sessão e não é persistido.
+- `progress_audit`: `items[]` com quantidade/preço de contrato, quantidade do período, quantidade acumulada, valor do período, valor acumulado, valor de contrato, razão acumulada e códigos de problema; `issues[]` ordenado por linha; `summary` com valores do período/declarado/contrato, ajuste de preço, razão acumulada, contagens e `status` (`ok` / `needs_review`). Todos os valores são centavos inteiros.
+- `progress_export`: CSV da planilha de revisão (UTF-8 BOM, pronto para Excel) com cabeçalho `行号,清单编码,名称,单位,合同量,合同单价(元),本期完成量,累计完成量,本期金额(元),累计金额(元),累计比例(%),是否计入,问题代码,问题说明`; uma linha por linha de declaração, duplicadas marcadas `是否计入=否`; gravado em `$DSH_HOME/dsh-progress-payment/exports/` e devolve caminho, linhas, bytes e sha256.
 - **Os CSVs de origem nunca são alterados**; nada é enviado e não há rede nem chamada ao modelo.
 
 ### Regras de auditoria
@@ -146,26 +146,26 @@ Este plugin **não tem chaves de Config** — tudo é ajustado pelos parâmetros
 
 | Ferramenta | Parâmetro | Obrigatório | Significado |
 |---|---|---|---|
-| `progress.ingest` | `declaration_csv` | sim | Conteúdo de texto do CSV de declaração do período |
-| `progress.ingest` | `contract_csv` | não | Conteúdo de texto do CSV da linha de base; sem ele usam-se a quantidade e o preço declarados |
-| `progress.ingest` | `source_name` | não | Rótulo de origem, padrão `declaration.csv`; apenas identificação |
-| `progress.audit` | `batch_id` | sim | Id do lote devolvido por `progress.ingest` |
-| `progress.audit` | `price_tolerance_bps` | não | Tolerância de preço unitário em pontos-base; 0 por padrão (exata); valor negativo ou NaN gera `E_PROGRESS_OPTION_INVALID` |
-| `progress.export` | `batch_id` | sim | Igual acima |
-| `progress.export` | `filename` | não | Nome do arquivo, apenas `[A-Za-z0-9._-]`, máx. 120 caracteres; padrão `progress-audit-<id curto>.csv` |
-| `progress.export` | `price_tolerance_bps` | não | Tolerância para reexecutar a auditoria, 0 por padrão |
+| `progress_ingest` | `declaration_csv` | sim | Conteúdo de texto do CSV de declaração do período |
+| `progress_ingest` | `contract_csv` | não | Conteúdo de texto do CSV da linha de base; sem ele usam-se a quantidade e o preço declarados |
+| `progress_ingest` | `source_name` | não | Rótulo de origem, padrão `declaration.csv`; apenas identificação |
+| `progress_audit` | `batch_id` | sim | Id do lote devolvido por `progress_ingest` |
+| `progress_audit` | `price_tolerance_bps` | não | Tolerância de preço unitário em pontos-base; 0 por padrão (exata); valor negativo ou NaN gera `E_PROGRESS_OPTION_INVALID` |
+| `progress_export` | `batch_id` | sim | Igual acima |
+| `progress_export` | `filename` | não | Nome do arquivo, apenas `[A-Za-z0-9._-]`, máx. 120 caracteres; padrão `progress-audit-<id curto>.csv` |
+| `progress_export` | `price_tolerance_bps` | não | Tolerância para reexecutar a auditoria, 0 por padrão |
 
 Exemplos de chamada (superfície de ferramentas):
 
 ```sh
 # 1) importar a declaração (superfície de ferramentas)
-#    progress.ingest({ declaration_csv, contract_csv })
+#    progress_ingest({ declaration_csv, contract_csv })
 
 # 2) auditar (superfície de ferramentas)
-#    progress.audit({ batch_id })
+#    progress_audit({ batch_id })
 
 # 3) exportar a planilha (superfície de ferramentas)
-#    progress.export({ batch_id, filename: "progress-audit-2026-10.csv" })
+#    progress_export({ batch_id, filename: "progress-audit-2026-10.csv" })
 ```
 
 Os testes podem sobrescrever a raiz de gravação local com a variável de ambiente `DSH_PROGRESS_PAYMENT_HOME`; o padrão é exatamente `$DSH_HOME/dsh-progress-payment`.
@@ -196,7 +196,7 @@ Não. Apenas a primeira ocorrência conta para o valor do período; as demais s�
 <details>
 <summary>Ele altera ou envia meus CSVs?</summary>
 
-Não. Lê apenas os CSVs indicados, grava somente em `$DSH_HOME/dsh-progress-payment/exports/` e nunca usa rede, chamada ao modelo ou upload. O lote de `progress.ingest` vive na memória da sessão, então uma sessão nova precisa importar de novo.
+Não. Lê apenas os CSVs indicados, grava somente em `$DSH_HOME/dsh-progress-payment/exports/` e nunca usa rede, chamada ao modelo ou upload. O lote de `progress_ingest` vive na memória da sessão, então uma sessão nova precisa importar de novo.
 
 </details>
 
@@ -214,7 +214,7 @@ Gravação: apenas `$DSH_HOME/dsh-progress-payment/exports/` (CSV da planilha de
 Rede: não.
 Sistemas externos: nenhum.
 
-`progress.ingest` e `progress.audit` são **R0** (somente leitura; `ingest` mantém o lote na memória da sessão e não grava arquivo). `progress.export` é **R1** (gravação local em `$DSH_HOME/dsh-progress-payment/exports/`). `DSH_PROGRESS_PAYMENT_HOME` pode sobrescrever a raiz de gravação local para testes; o padrão é exatamente `$DSH_HOME/dsh-progress-payment`.
+`progress_ingest` e `progress_audit` são **R0** (somente leitura; `ingest` mantém o lote na memória da sessão e não grava arquivo). `progress_export` é **R1** (gravação local em `$DSH_HOME/dsh-progress-payment/exports/`). `DSH_PROGRESS_PAYMENT_HOME` pode sobrescrever a raiz de gravação local para testes; o padrão é exatamente `$DSH_HOME/dsh-progress-payment`.
 
 ## Evidência de aceitação
 
@@ -268,7 +268,7 @@ node --test test/*.test.mjs
 node scripts/gate.mjs
 ```
 
-Versão atual `0.1.0`; 32 testes passam (`node --test test/*.test.mjs`). Portão de publicação `node scripts/gate.mjs` = lint de metadados + todas as linhas públicas de aceitação verdes + a linha contada do quickstart presente. O banner e o diagrama de estrutura são gerados por [`scripts/gen-readme-assets.py`](scripts/gen-readme-assets.py) (Pillow para os quatro banners webp de 1440x576, SVG escrito à mão para o diagrama de 1100x660; cada número é copiado de `samples/quickstart/expected/result.json`; não há dados de benchmark, então nenhum gráfico de evidência é emitido) e podem ser reexecutados; `docs/assets/quickstart.png` é uma captura real, mantida junto com `docs/assets/quickstart.log`.
+Versão atual `0.2.0`; 33 testes passam (`node --test test/*.test.mjs`). Portão de publicação `node scripts/gate.mjs` = lint de metadados + todas as linhas públicas de aceitação verdes + a linha contada do quickstart presente. O banner e o diagrama de estrutura são gerados por [`scripts/gen-readme-assets.py`](scripts/gen-readme-assets.py) (Pillow para os quatro banners webp de 1440x576, SVG escrito à mão para o diagrama de 1100x660; cada número é copiado de `samples/quickstart/expected/result.json`; não há dados de benchmark, então nenhum gráfico de evidência é emitido) e podem ser reexecutados; `docs/assets/quickstart.png` é uma captura real, mantida junto com `docs/assets/quickstart.log`.
 
 Topics: `dsh`, `dsh-plugin`, `deepseek-harness`, `progress-payment`, `construction`, `quantity-surveying`, `csv`, `perrylink`
 
