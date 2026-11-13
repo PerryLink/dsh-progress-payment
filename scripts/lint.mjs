@@ -66,7 +66,7 @@ const walk = (dir) => {
 }
 walk('src')
 const source = srcFiles.map(read).join('\n')
-for (const tool of ['progress.ingest', 'progress.audit', 'progress.export']) {
+for (const tool of ['progress_ingest', 'progress_audit', 'progress_export']) {
   check(source.includes(`name: '${tool}'`), `src must define the ${tool} tool`)
 }
 check(/\bE_PROGRESS_/.test(source), 'src must define stable E_PROGRESS_* error codes')

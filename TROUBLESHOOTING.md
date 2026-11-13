@@ -47,9 +47,9 @@
 
 ## 8. 找不到这批申报（E_PROGRESS_BATCH_NOT_FOUND）
 
-- **症状**：`找不到这批申报（E_PROGRESS_BATCH_NOT_FOUND）｜下一步：先运行 progress.ingest 导入 CSV 拿到 batch_id，再运行 progress.audit 或 progress.export`
+- **症状**：`找不到这批申报（E_PROGRESS_BATCH_NOT_FOUND）｜下一步：先运行 progress_ingest 导入 CSV 拿到 batch_id，再运行 progress_audit 或 progress_export`
 - **原因**：`batch_id` 拼错，或换了会话/进程（批次只存在当前会话内存里）。
-- **动作**：重新运行 `progress.ingest` 拿到新的 `batch_id`，再做 `audit` / `export`。
+- **动作**：重新运行 `progress_ingest` 拿到新的 `batch_id`，再做 `audit` / `export`。
 
 ## 9. 审核参数不合法（E_PROGRESS_OPTION_INVALID）
 
@@ -72,4 +72,4 @@ node scripts/gate.mjs                     # 元数据 + 验收门
 ```
 
 仍失败时请在 <https://github.com/PerryLink/dsh-progress-payment/issues> 附上：包版本、最小合成申报
-（或生成脚本）、`progress.audit` 的完整报错行、Node 与 DSH 版本。**不要附真实合同或客户申报。**
+（或生成脚本）、`progress_audit` 的完整报错行、Node 与 DSH 版本。**不要附真实合同或客户申报。**

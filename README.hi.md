@@ -41,7 +41,7 @@ dsh plugin --profile <profile> add dsh-progress-payment
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-progress-payment-flow-v5-dark.svg">
-  <img src="docs/assets/dsh-progress-payment-flow-v5-light.svg" width="100%" alt="dsh-progress-payment संरचना: घोषणा CSV (7 कॉलम) और वैकल्पिक अनुबंध आधार-रेखा CSV (3 कॉलम) progress.ingest से एक बैच बनाते हैं; progress.audit छह मदों को तीन अक्षों (अतिरिक्त मात्रा, मूल्य, दोहराव) पर जाँचता है, अवधि राशि और संचित अनुपात निकालता है, सारांश needs_review देता है; progress.export 8 पंक्तियों की शीट $DSH_HOME/dsh-progress-payment/exports/ में लिखता है और दोहराव पंक्ति को गिना नहीं गया चिह्नित करता है">
+  <img src="docs/assets/dsh-progress-payment-flow-v5-light.svg" width="100%" alt="dsh-progress-payment संरचना: घोषणा CSV (7 कॉलम) और वैकल्पिक अनुबंध आधार-रेखा CSV (3 कॉलम) progress_ingest से एक बैच बनाते हैं; progress_audit छह मदों को तीन अक्षों (अतिरिक्त मात्रा, मूल्य, दोहराव) पर जाँचता है, अवधि राशि और संचित अनुपात निकालता है, सारांश needs_review देता है; progress_export 8 पंक्तियों की शीट $DSH_HOME/dsh-progress-payment/exports/ में लिखता है और दोहराव पंक्ति को गिना नहीं गया चिह्नित करता है">
 </picture>
 
 ## तीन चरणों में शुरुआत
@@ -80,9 +80,9 @@ dsh plugin --profile <profile> add dsh-progress-payment
 
 | टूल | उद्देश्य | जोखिम |
 |---|---|---|
-| `progress.ingest` | घोषणा CSV और वैकल्पिक अनुबंध आधार-रेखा CSV आयात करता है; `batch_id`, पंक्तियाँ, मदों की संख्या और sha256 लौटाता है; बैच केवल सत्र मेमोरी में रहता है | R0 |
-| `progress.audit` | अवधि राशि, संचयी अनुपात, अनुबंध से अधिक मात्रा, दर में अंतर, आधार-रेखा अनुपस्थित/अलग, संचयी अवधि से कम और दोहराई गई मदों का ऑडिट; समस्या-सूची लौटाता है; पूर्णांक सेंट | R0 |
-| `progress.export` | ऑडिट दोबारा चलाकर समीक्षा वर्कशीट CSV (UTF-8 BOM) लिखता है; पथ, पंक्तियाँ, बाइट और sha256 लौटाता है | R1 लोकल लेखन |
+| `progress_ingest` | घोषणा CSV और वैकल्पिक अनुबंध आधार-रेखा CSV आयात करता है; `batch_id`, पंक्तियाँ, मदों की संख्या और sha256 लौटाता है; बैच केवल सत्र मेमोरी में रहता है | R0 |
+| `progress_audit` | अवधि राशि, संचयी अनुपात, अनुबंध से अधिक मात्रा, दर में अंतर, आधार-रेखा अनुपस्थित/अलग, संचयी अवधि से कम और दोहराई गई मदों का ऑडिट; समस्या-सूची लौटाता है; पूर्णांक सेंट | R0 |
+| `progress_export` | ऑडिट दोबारा चलाकर समीक्षा वर्कशीट CSV (UTF-8 BOM) लिखता है; पथ, पंक्तियाँ, बाइट और sha256 लौटाता है | R1 लोकल लेखन |
 
 - **अनुबंध आधार-रेखा ही प्रमाण** — दी गई हो तो उसकी मात्रा और दर ही अधिकारिक हैं; घोषणा में लिखी अनुबंध मात्रा/दर केवल मिलान के लिए है, और अंतर `E_PROGRESS_CONTRACT_MISMATCH` या `E_PROGRESS_PRICE_MISMATCH` देता है।
 - **पूर्णांक सेंट में पैसा** — मात्रा अधिकतम 3 दशमलव, दर/राशि अधिकतम 2; हर राशि पूर्णांक सेंट में गिनी जाती है और सेंट पर राउंड होती है, फ़्लोटिंग-पॉइंट जोड़ कभी नहीं।
@@ -106,9 +106,9 @@ item_code,item_name,unit,contract_qty,contract_unit_price,period_qty,cumulative_
 
 ## आउटपुट
 
-- `progress.ingest`: `batch_id`, `rows`, `items`, `contract_items`, `declaration_sha256`, `contract_sha256`। एक ही CSV जोड़ी के लिए `batch_id` निर्धारक है, पर बैच केवल सत्र मेमोरी में रहता है और सहेजा नहीं जाता।
-- `progress.audit`: `items[]` में अनुबंध मात्रा/दर, अवधि मात्रा, संचयी मात्रा, अवधि राशि, संचयी राशि, अनुबंध राशि, संचयी अनुपात और समस्या कोड; `issues[]` पंक्ति क्रम में; `summary` में अवधि/घोषित/अनुबंध राशि, दर समायोजन, संचयी अनुपात, समस्या गिनती और `status` (`ok` / `needs_review`)। सभी राशियाँ पूर्णांक सेंट में।
-- `progress.export`: समीक्षा वर्कशीट CSV (UTF-8 BOM, Excel-तैयार) जिसका हेडर `行号,清单编码,名称,单位,合同量,合同单价(元),本期完成量,累计完成量,本期金额(元),累计金额(元),累计比例(%),是否计入,问题代码,问题说明` है; हर घोषणा पंक्ति के लिए एक पंक्ति, दोहराई गईं `是否计入=否`; `$DSH_HOME/dsh-progress-payment/exports/` में लिखा जाता है और पथ, पंक्तियाँ, बाइट और sha256 लौटाता है।
+- `progress_ingest`: `batch_id`, `rows`, `items`, `contract_items`, `declaration_sha256`, `contract_sha256`। एक ही CSV जोड़ी के लिए `batch_id` निर्धारक है, पर बैच केवल सत्र मेमोरी में रहता है और सहेजा नहीं जाता।
+- `progress_audit`: `items[]` में अनुबंध मात्रा/दर, अवधि मात्रा, संचयी मात्रा, अवधि राशि, संचयी राशि, अनुबंध राशि, संचयी अनुपात और समस्या कोड; `issues[]` पंक्ति क्रम में; `summary` में अवधि/घोषित/अनुबंध राशि, दर समायोजन, संचयी अनुपात, समस्या गिनती और `status` (`ok` / `needs_review`)। सभी राशियाँ पूर्णांक सेंट में।
+- `progress_export`: समीक्षा वर्कशीट CSV (UTF-8 BOM, Excel-तैयार) जिसका हेडर `行号,清单编码,名称,单位,合同量,合同单价(元),本期完成量,累计完成量,本期金额(元),累计金额(元),累计比例(%),是否计入,问题代码,问题说明` है; हर घोषणा पंक्ति के लिए एक पंक्ति, दोहराई गईं `是否计入=否`; `$DSH_HOME/dsh-progress-payment/exports/` में लिखा जाता है और पथ, पंक्तियाँ, बाइट और sha256 लौटाता है।
 - **स्रोत CSV कभी नहीं बदलते**; कुछ अपलोड नहीं होता और कोई नेटवर्क या मॉडल कॉल नहीं होता।
 
 ### ऑडिट नियम
@@ -146,26 +146,26 @@ node samples/quickstart/run.mjs --check
 
 | टूल | पैरामीटर | आवश्यक | अर्थ |
 |---|---|---|---|
-| `progress.ingest` | `declaration_csv` | हाँ | अवधि की घोषणा CSV की टेक्स्ट सामग्री |
-| `progress.ingest` | `contract_csv` | नहीं | अनुबंध आधार-रेखा CSV की टेक्स्ट सामग्री; न देने पर घोषित अनुबंध मात्रा/दर उपयोग होती है |
-| `progress.ingest` | `source_name` | नहीं | स्रोत लेबल, डिफ़ॉल्ट `declaration.csv`; केवल पहचान के लिए |
-| `progress.audit` | `batch_id` | हाँ | `progress.ingest` से मिला बैच id |
-| `progress.audit` | `price_tolerance_bps` | नहीं | इकाई-दर सहनशीलता, बेसिस पॉइंट में; डिफ़ॉल्ट 0 (सटीक); ऋणात्मक या NaN `E_PROGRESS_OPTION_INVALID` देता है |
-| `progress.export` | `batch_id` | हाँ | ऊपर जैसा |
-| `progress.export` | `filename` | नहीं | निर्यात फ़ाइल नाम, केवल `[A-Za-z0-9._-]`, अधिकतम 120 अक्षर; डिफ़ॉल्ट `progress-audit-<batch short id>.csv` |
-| `progress.export` | `price_tolerance_bps` | नहीं | दोबारा ऑडिट के लिए दर सहनशीलता, डिफ़ॉल्ट 0 |
+| `progress_ingest` | `declaration_csv` | हाँ | अवधि की घोषणा CSV की टेक्स्ट सामग्री |
+| `progress_ingest` | `contract_csv` | नहीं | अनुबंध आधार-रेखा CSV की टेक्स्ट सामग्री; न देने पर घोषित अनुबंध मात्रा/दर उपयोग होती है |
+| `progress_ingest` | `source_name` | नहीं | स्रोत लेबल, डिफ़ॉल्ट `declaration.csv`; केवल पहचान के लिए |
+| `progress_audit` | `batch_id` | हाँ | `progress_ingest` से मिला बैच id |
+| `progress_audit` | `price_tolerance_bps` | नहीं | इकाई-दर सहनशीलता, बेसिस पॉइंट में; डिफ़ॉल्ट 0 (सटीक); ऋणात्मक या NaN `E_PROGRESS_OPTION_INVALID` देता है |
+| `progress_export` | `batch_id` | हाँ | ऊपर जैसा |
+| `progress_export` | `filename` | नहीं | निर्यात फ़ाइल नाम, केवल `[A-Za-z0-9._-]`, अधिकतम 120 अक्षर; डिफ़ॉल्ट `progress-audit-<batch short id>.csv` |
+| `progress_export` | `price_tolerance_bps` | नहीं | दोबारा ऑडिट के लिए दर सहनशीलता, डिफ़ॉल्ट 0 |
 
 कॉल उदाहरण (टूल सतह):
 
 ```sh
 # 1) घोषणा आयात करें (टूल सतह)
-#    progress.ingest({ declaration_csv, contract_csv })
+#    progress_ingest({ declaration_csv, contract_csv })
 
 # 2) ऑडिट करें (टूल सतह)
-#    progress.audit({ batch_id })
+#    progress_audit({ batch_id })
 
 # 3) वर्कशीट निर्यात करें (टूल सतह)
-#    progress.export({ batch_id, filename: "progress-audit-2026-10.csv" })
+#    progress_export({ batch_id, filename: "progress-audit-2026-10.csv" })
 ```
 
 टेस्ट में लोकल लेखन रूट को `DSH_PROGRESS_PAYMENT_HOME` पर्यावरण चर से बदला जा सकता है; डिफ़ॉल्ट ठीक `$DSH_HOME/dsh-progress-payment` है।
@@ -196,7 +196,7 @@ node samples/quickstart/run.mjs --check
 <details>
 <summary>क्या यह मेरी CSV बदलता या अपलोड करता है?</summary>
 
-नहीं। केवल बताई गई CSV पढ़ता है, केवल `$DSH_HOME/dsh-progress-payment/exports/` में लिखता है, और कभी नेटवर्क, मॉडल कॉल या अपलोड उपयोग नहीं करता। `progress.ingest` का बैच सत्र मेमोरी में रहता है, इसलिए नए सत्र में दोबारा आयात करना होगा।
+नहीं। केवल बताई गई CSV पढ़ता है, केवल `$DSH_HOME/dsh-progress-payment/exports/` में लिखता है, और कभी नेटवर्क, मॉडल कॉल या अपलोड उपयोग नहीं करता। `progress_ingest` का बैच सत्र मेमोरी में रहता है, इसलिए नए सत्र में दोबारा आयात करना होगा।
 
 </details>
 
@@ -214,7 +214,7 @@ node samples/quickstart/run.mjs --check
 नेटवर्क: नहीं।
 बाहरी सिस्टम: कोई नहीं।
 
-`progress.ingest` और `progress.audit` **R0** हैं (केवल-पढ़ने योग्य; `ingest` बैच सत्र मेमोरी में रखता है और कोई फ़ाइल नहीं लिखता)। `progress.export` **R1** है (लोकल लेखन, `$DSH_HOME/dsh-progress-payment/exports/` में)। टेस्ट के लिए `DSH_PROGRESS_PAYMENT_HOME` लोकल लेखन रूट बदल सकता है; डिफ़ॉल्ट ठीक `$DSH_HOME/dsh-progress-payment` है।
+`progress_ingest` और `progress_audit` **R0** हैं (केवल-पढ़ने योग्य; `ingest` बैच सत्र मेमोरी में रखता है और कोई फ़ाइल नहीं लिखता)। `progress_export` **R1** है (लोकल लेखन, `$DSH_HOME/dsh-progress-payment/exports/` में)। टेस्ट के लिए `DSH_PROGRESS_PAYMENT_HOME` लोकल लेखन रूट बदल सकता है; डिफ़ॉल्ट ठीक `$DSH_HOME/dsh-progress-payment` है।
 
 ## स्वीकृति साक्ष्य
 
@@ -268,7 +268,7 @@ node --test test/*.test.mjs
 node scripts/gate.mjs
 ```
 
-वर्तमान संस्करण `0.1.0`; 32 टेस्ट पास (`node --test test/*.test.mjs`)। रिलीज़ गेट `node scripts/gate.mjs` = मेटाडेटा lint + सभी सार्वजनिक स्वीकृति पंक्तियाँ पास + counted quickstart पंक्ति मौजूद। बैनर और संरचना चित्र [`scripts/gen-readme-assets.py`](scripts/gen-readme-assets.py) से प्रोग्रामेटिक रूप से बनते हैं (चार 1440x576 webp बैनर Pillow से, 1100x660 संरचना चित्र हाथ से लिखे SVG से; हर आँकड़ा `samples/quickstart/expected/result.json` से शब्दशः लिया गया है; कोई benchmark डेटा नहीं है, इसलिए evidence चार्ट नहीं बनता) और दोबारा चलाए जा सकते हैं; `docs/assets/quickstart.png` वास्तविक कैप्चर है, `docs/assets/quickstart.log` के साथ रखा गया है।
+वर्तमान संस्करण `0.2.0`; 33 टेस्ट पास (`node --test test/*.test.mjs`)। रिलीज़ गेट `node scripts/gate.mjs` = मेटाडेटा lint + सभी सार्वजनिक स्वीकृति पंक्तियाँ पास + counted quickstart पंक्ति मौजूद। बैनर और संरचना चित्र [`scripts/gen-readme-assets.py`](scripts/gen-readme-assets.py) से प्रोग्रामेटिक रूप से बनते हैं (चार 1440x576 webp बैनर Pillow से, 1100x660 संरचना चित्र हाथ से लिखे SVG से; हर आँकड़ा `samples/quickstart/expected/result.json` से शब्दशः लिया गया है; कोई benchmark डेटा नहीं है, इसलिए evidence चार्ट नहीं बनता) और दोबारा चलाए जा सकते हैं; `docs/assets/quickstart.png` वास्तविक कैप्चर है, `docs/assets/quickstart.log` के साथ रखा गया है।
 
 Topics: `dsh`, `dsh-plugin`, `deepseek-harness`, `progress-payment`, `construction`, `quantity-surveying`, `csv`, `perrylink`
 

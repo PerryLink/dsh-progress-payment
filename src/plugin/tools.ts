@@ -77,7 +77,7 @@ function requireBatch(deps: ToolDeps, batchId: string | undefined): ProgressBatc
 
 export function createTools(deps: ToolDeps) {
   const ingest = defineTool({
-    name: 'progress.ingest',
+    name: 'progress_ingest',
     description:
       'Import one current-period progress declaration CSV (item code, name, unit, contract qty, contract unit price, period qty, cumulative qty) and an optional contract baseline; stores the batch in session memory; no file is written.',
     parameters: {
@@ -109,7 +109,7 @@ export function createTools(deps: ToolDeps) {
   })
 
   const audit = defineTool({
-    name: 'progress.audit',
+    name: 'progress_audit',
     description:
       'Audit a stored declaration: period amount in integer cents, cumulative ratio, over-contract quantity, contract/declared unit-price mismatch, cumulative-over-contract and duplicate item codes. Returns the problem list; amounts stay in integer cents. Read-only.',
     parameters: {
@@ -137,7 +137,7 @@ export function createTools(deps: ToolDeps) {
   })
 
   const exportCsv = defineTool({
-    name: 'progress.export',
+    name: 'progress_export',
     description:
       'Run the audit again and write the review worksheet CSV (one row per declaration line, duplicate rows marked counted=no) under $DSH_HOME/dsh-progress-payment/exports; returns path, rows and sha256. Local R1 write.',
     parameters: {

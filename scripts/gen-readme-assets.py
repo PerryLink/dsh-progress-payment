@@ -10,25 +10,25 @@ Design notes
 Hero -- left column is prose (kicker / two-line wordmark / two value lines /
   one subtitle / one meta / footer). The right column is this plugin's own
   semantic graphic, a period sign-off bench:
-    * card 1  progress.audit sign-off: period amount 50,763.60, declared
+    * card 1  progress_audit sign-off: period amount 50,763.60, declared
       51,627.60, price adjustment -864.00, cumulative 614,145.00, cumulative
       ratio 84.62% on a bar against the contract amount 725,750.00, status
       needs_review / 3 blocking;
     * card 2  issues[] ledger: the three real blocking issues -- over quantity
       (101.5 > 95), price mismatch (65.00 != 55.00) and duplicate item (x2,
       counted=no) -- with their row numbers;
-    * strip   progress.export: the 8-row worksheet, 1,291 bytes, UTF-8 BOM,
+    * strip   progress_export: the 8-row worksheet, 1,291 bytes, UTF-8 BOM,
       sha256 prefix and the $DSH_HOME exports path.
   Every number comes from samples/quickstart/expected/result.json (7 rows,
   6 items, batch pg_ea0edb1548cb530b); nothing is invented.
 
 Flow -- a ledger bench, not a row of five boxes. Grammar:
   two source cards (declaration CSV, 7 columns; optional contract baseline CSV,
-  3 columns, "baseline wins") fold into the progress.ingest batch bar; the
+  3 columns, "baseline wins") fold into the progress_ingest batch bar; the
   bench then shows a 6-item x 3-axis check matrix (over_qty / price / dup)
   with the real period amount and cumulative ratio per item, a summary
   scoreboard (period / declared / price adjustment / cumulative / contract /
-  ratio bar / needs_review) and one progress.export rail carrying the
+  ratio bar / needs_review) and one progress_export rail carrying the
   worksheet facts plus the three E_PROGRESS_* codes. Text is token-only
   (English CSV headers, tool names, field names, amounts), so one light/dark
   pair serves all five README languages.
@@ -184,7 +184,7 @@ HERO = {
         sub="申报 CSV + 合同基准 → 问题清单 → 底稿 CSV",
         meta="R0 只读 / R1 本地写 · 全程本地 · 不联网 · 不调模型",
         foot="Apache-2.0 · PerryLink DSH plugin family · dsh ≥0.2.1 <0.4.0",
-        c1_label="progress.audit · R0",
+        c1_label="progress_audit · R0",
         c1_title="本期签认",
         c1_cents="5,076,360 分 · CNY",
         c1_rows=(("申报", "51,627.60"), ("价差", "−864.00"),
@@ -192,7 +192,7 @@ HERO = {
         c1_ratio="累计比例",
         c1_note="合同 725,750.00",
         c1_status="needs_review · 3 blocking",
-        c2_label="issues[] · progress.audit",
+        c2_label="issues[] · progress_audit",
         c2_title="3 个阻塞问题",
         c2_rows=(("E_PROGRESS_OVER_QTY", "row 4",
                   "010402001 · 101.5 > 95 m³"),
@@ -202,7 +202,7 @@ HERO = {
                   "010101003 · ×2 → 计入=否")),
         c2_foot1="batch pg_ea0edb1548cb530b",
         c2_foot2="按行号排序 · 重复行不计入",
-        strip_label="progress.export · R1",
+        strip_label="progress_export · R1",
         strip_mid="worksheet · 8 rows · 1,291 B · UTF-8 BOM",
         strip_sha="sha256 24cca857…",
         strip_dir="$DSH_HOME/dsh-progress-payment/exports/",
@@ -218,7 +218,7 @@ HERO = {
         sub="Declaration + baseline → issue list → CSV",
         meta="R0 read-only / R1 local write · offline, no model call",
         foot="Apache-2.0 · PerryLink DSH plugin family · dsh ≥0.2.1 <0.4.0",
-        c1_label="progress.audit · R0",
+        c1_label="progress_audit · R0",
         c1_title="period sign-off",
         c1_cents="5,076,360 cents · CNY",
         c1_rows=(("declared", "51,627.60"), ("price adj", "−864.00"),
@@ -226,7 +226,7 @@ HERO = {
         c1_ratio="cum ratio",
         c1_note="contract 725,750.00",
         c1_status="needs_review · 3 blocking",
-        c2_label="issues[] · progress.audit",
+        c2_label="issues[] · progress_audit",
         c2_title="3 blocking issues",
         c2_rows=(("E_PROGRESS_OVER_QTY", "row 4",
                   "010402001 · 101.5 > 95 m³"),
@@ -236,7 +236,7 @@ HERO = {
                   "010101003 · ×2 → counted=no")),
         c2_foot1="batch pg_ea0edb1548cb530b",
         c2_foot2="sorted by row · dup rows excluded",
-        strip_label="progress.export · R1",
+        strip_label="progress_export · R1",
         strip_mid="worksheet · 8 rows · 1,291 B · UTF-8 BOM",
         strip_sha="sha256 24cca857…",
         strip_dir="$DSH_HOME/dsh-progress-payment/exports/",
@@ -453,7 +453,7 @@ def flow_svg(skin_name: str) -> None:
     f = FLOW[skin_name]
     p: list[str] = []
 
-    p.append(f'''<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="660" viewBox="0 0 1100 660" role="img" aria-label="dsh-progress-payment: a declaration CSV plus an optional contract baseline CSV go through progress.ingest into one batch; progress.audit checks every item on three axes (over quantity, price difference, duplicate code), computes period amounts and cumulative ratios in integer cents, and the summary reports needs_review; progress.export writes an 8-row UTF-8 BOM worksheet into DSH_HOME exports">
+    p.append(f'''<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="660" viewBox="0 0 1100 660" role="img" aria-label="dsh-progress-payment: a declaration CSV plus an optional contract baseline CSV go through progress_ingest into one batch; progress_audit checks every item on three axes (over quantity, price difference, duplicate code), computes period amounts and cumulative ratios in integer cents, and the summary reports needs_review; progress_export writes an 8-row UTF-8 BOM worksheet into DSH_HOME exports">
 <title>dsh-progress-payment: two source CSVs, a per-item check matrix, one worksheet</title>
 <defs>
   <linearGradient id="bg" x1="0" y1="0" x2="0.35" y2="1">
@@ -521,7 +521,7 @@ def flow_svg(skin_name: str) -> None:
 
     # ingest bar -----------------------------------------------------------
     p.append(f'<rect x="40" y="252" width="1020" height="36" rx="18" fill="{f["zone"]}" stroke="{f["accent"]}" stroke-width="1.4" opacity=".98"/>')
-    p.append(svg_text(60, 275, "progress.ingest · R0", 17, f["accent"],
+    p.append(svg_text(60, 275, "progress_ingest · R0", 17, f["accent"],
                       bold=True, limit=230, tag="ingest.name"))
     p.append(svg_text(300, 275, "batch_id pg_ea0edb1548cb530b", 14, f["sub"],
                       limit=270, tag="ingest.batch"))
@@ -534,7 +534,7 @@ def flow_svg(skin_name: str) -> None:
 
     # ---------------------------------------------------------- matrix card
     p.append(f'<g filter="url(#soft)"><rect x="40" y="308" width="600" height="220" rx="20" fill="{f["card"]}" stroke="{f["edge"]}" stroke-width="1.5"/></g>')
-    p.append(svg_text(60, 332, "progress.audit · R0", 17, f["accent"],
+    p.append(svg_text(60, 332, "progress_audit · R0", 17, f["accent"],
                       bold=True, limit=200, tag="audit.name"))
     p.append(svg_text(620, 332, "6 items × 3 axes · integer cents", 14,
                       f["faint"], anchor="end", limit=300, tag="audit.meta"))
@@ -621,7 +621,7 @@ def flow_svg(skin_name: str) -> None:
         p.append(f'<line x1="{ax}" y1="530" x2="{ax}" y2="536" stroke="{f["accent"]}" stroke-width="2" opacity=".55"/>')
         p.append(f'<path d="M{ax - 5} 535 L{ax + 5} 535 L{ax} 541 Z" fill="{f["accent"]}" opacity=".7"/>')
     p.append(f'<g filter="url(#soft)"><rect x="40" y="542" width="1020" height="88" rx="18" fill="{f["card"]}" stroke="{f["edge"]}" stroke-width="1.5"/></g>')
-    p.append(svg_text(60, 570, "progress.export · R1", 17, f["accent"],
+    p.append(svg_text(60, 570, "progress_export · R1", 17, f["accent"],
                       bold=True, limit=210, tag="export.name"))
     p.append(svg_text(280, 570,
                       "worksheet CSV · 8 rows (header + 7) · 1,291 B · UTF-8 BOM",
