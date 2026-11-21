@@ -138,6 +138,11 @@ node samples/quickstart/run.mjs --check
 
 ![Saída real do quickstart do dsh-progress-payment](docs/assets/quickstart.png)
 
+![Saída real do quickstart do dsh-progress-payment](docs/assets/dsh-progress-payment-demo.gif)
+
+*A versão animada da mesma execução.*
+
+
 É uma execução real: 7 linhas de declaração / 6 itens, valor do período **50.763,60 CNY**, acumulado **614.145,00 CNY (84,62%)** e 3 problemas bloqueantes — a coluna retangular chegou a 101,5 m³ acumulados contra 95 m³ de contrato, o preço da forma era 65,00 contra 55,00 da linha de base, e um código apareceu duas vezes. A planilha tem 8 linhas (cabeçalho + 7) e 1.291 bytes. `samples/quickstart/expected/result.json` é a saída real de `node samples/quickstart/run.mjs --json`, não foi escrito à mão; o log original está em [`docs/assets/quickstart.log`](docs/assets/quickstart.log).
 
 ## Configuração

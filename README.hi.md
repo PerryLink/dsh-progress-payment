@@ -138,6 +138,11 @@ node samples/quickstart/run.mjs --check
 
 ![dsh-progress-payment quickstart का वास्तविक आउटपुट](docs/assets/quickstart.png)
 
+![dsh-progress-payment quickstart का वास्तविक आउटपुट](docs/assets/dsh-progress-payment-demo.gif)
+
+*उसी असली रन का एनिमेटेड संस्करण।*
+
+
 यह एक वास्तविक रन है: 7 घोषणा पंक्तियाँ / 6 मदें, अवधि राशि **50,763.60 CNY**, संचयी **614,145.00 CNY (84.62%)**, और 3 अवरोधक समस्याएँ — आयताकार स्तंभ संचयी 101.5 m³ तक पहुँचा जबकि अनुबंध 95 m³ था, फ़ॉर्मवर्क की दर आधार-रेखा 55.00 के सामने 65.00 थी, और एक मद कोड दो बार आया। वर्कशीट में 8 पंक्तियाँ (हेडर + 7) और 1,291 बाइट हैं। `samples/quickstart/expected/result.json` `node samples/quickstart/run.mjs --json` का वास्तविक आउटपुट है, हाथ से लिखा नहीं; मूल लॉग [`docs/assets/quickstart.log`](docs/assets/quickstart.log) में है।
 
 ## कॉन्फ़िगरेशन

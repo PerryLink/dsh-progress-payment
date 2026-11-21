@@ -145,6 +145,11 @@ node samples/quickstart/run.mjs --check
 
 ![dsh-progress-payment quickstart terminal output](docs/assets/quickstart.png)
 
+![dsh-progress-payment quickstart terminal output](docs/assets/dsh-progress-payment-demo.gif)
+
+*The animated version of the same run.*
+
+
 This is a real run: 7 declaration rows / 6 bill items, period amount **50,763.60 CNY**, cumulative **614,145.00 CNY (84.62%)**, and 3 blocking issues — the rectangular column reached a cumulative 101.5 m³ against a 95 m³ contract, the formwork price was 65.00 against a 55.00 baseline, and one item code appeared twice. The worksheet has 8 rows (header + 7) and 1,291 bytes. `samples/quickstart/expected/result.json` is the real stdout of `node samples/quickstart/run.mjs --json`, not hand-written; the raw log is kept at [`docs/assets/quickstart.log`](docs/assets/quickstart.log).
 
 ## Configuration
