@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Progress payment",
+    "description": "Confirm this period's progress payment against the contract baseline: integer-cent amounts, cumulative ratio, over-quantity/price/duplicate issue list → review worksheet CSV."
+  }
+}
