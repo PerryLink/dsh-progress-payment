@@ -11,6 +11,8 @@
 
 Uma ferramenta totalmente local de auditoria de pagamentos por medição para o DeepSeek Harness: lê um CSV de declaração e, opcionalmente, um CSV da linha de base do contrato; confere quantidade e preço item a item; calcula o valor do período, o acumulado e a razão acumulada; e exporta uma planilha revisável — sem rede, sem chamada ao modelo, sem upload.
 
+Última verificação: DeepSeek Harness `dsh-v0.2.3-alpha.1` (2026-11-22).
+
 [Instalar](#instalação-em-três-passos) · [Configuração](#configuração) · [FAQ](#faq) · [简体中文](README.md) · [English](README.en.md) · [Español](README.es.md) · [Português](README.pt.md) · [हिन्दी](README.hi.md)
 
 [![License](https://img.shields.io/badge/license-Apache--2.0-3366CC?style=flat-square&labelColor=2B3245)](LICENSE)
@@ -142,7 +144,6 @@ node samples/quickstart/run.mjs --check
 
 *A versão animada da mesma execução.*
 
-
 É uma execução real: 7 linhas de declaração / 6 itens, valor do período **50.763,60 CNY**, acumulado **614.145,00 CNY (84,62%)** e 3 problemas bloqueantes — a coluna retangular chegou a 101,5 m³ acumulados contra 95 m³ de contrato, o preço da forma era 65,00 contra 55,00 da linha de base, e um código apareceu duas vezes. A planilha tem 8 linhas (cabeçalho + 7) e 1.291 bytes. `samples/quickstart/expected/result.json` é a saída real de `node samples/quickstart/run.mjs --json`, não foi escrito à mão; o log original está em [`docs/assets/quickstart.log`](docs/assets/quickstart.log).
 
 ## Configuração
@@ -273,7 +274,7 @@ node --test test/*.test.mjs
 node scripts/gate.mjs
 ```
 
-Versão atual `0.2.0`; 33 testes passam (`node --test test/*.test.mjs`). Portão de publicação `node scripts/gate.mjs` = lint de metadados + todas as linhas públicas de aceitação verdes + a linha contada do quickstart presente. O banner e o diagrama de estrutura são gerados por [`scripts/gen-readme-assets.py`](scripts/gen-readme-assets.py) (Pillow para os quatro banners webp de 1440x576, SVG escrito à mão para o diagrama de 1100x660; cada número é copiado de `samples/quickstart/expected/result.json`; não há dados de benchmark, então nenhum gráfico de evidência é emitido) e podem ser reexecutados; `docs/assets/quickstart.png` é uma captura real, mantida junto com `docs/assets/quickstart.log`.
+Versão atual `0.2.1`; 33 testes passam (`node --test test/*.test.mjs`). Portão de publicação `node scripts/gate.mjs` = lint de metadados + todas as linhas públicas de aceitação verdes + a linha contada do quickstart presente. O banner e o diagrama de estrutura são gerados por [`scripts/gen-readme-assets.py`](scripts/gen-readme-assets.py) (Pillow para os quatro banners webp de 1440x576, SVG escrito à mão para o diagrama de 1100x660; cada número é copiado de `samples/quickstart/expected/result.json`; não há dados de benchmark, então nenhum gráfico de evidência é emitido) e podem ser reexecutados; `docs/assets/quickstart.png` é uma captura real, mantida junto com `docs/assets/quickstart.log`.
 
 Topics: `dsh`, `dsh-plugin`, `deepseek-harness`, `progress-payment`, `construction`, `quantity-surveying`, `csv`, `perrylink`
 
